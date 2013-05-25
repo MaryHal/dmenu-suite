@@ -1,0 +1,59 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+mainMenu="[Shutdown]
+[Reboot]
+[Sleep]
+[Cancel]"
+#[Hibernate] #defunct
+#[Lock]
+
+pauseMenu="0
+60m
+45m
+30m
+15m
+10m
+5m
+3m
+2m
+1m"
+
+action=$(menu "Option: " "$mainMenu")
+[ -z "$action" ] && exit
+
+pauseTime=$(menu "Pause:" "$pauseMenu")
+[ -z "$pauseTime" ] && exit
+
+case "$action" in
+    '[Shutdown]')
+        #pauseTime=$(menu "Pause:" "$pauseMenu")
+        #[ -z "$pauseTime" ] && exit
+        #command="sudo shutdown -h $pauseTime"
+        command="sudo systemctl poweroff"
+    ;;
+    '[Reboot]')
+        #pauseTime=$(menu "Pause:" "$pauseMenu")
+        #[ -z "$pauseTime" ] && exit
+        #command="sudo shutdown -r $pauseTime"
+        command="sudo systemctl reboot"
+    ;;
+    '[Sleep]')
+        command="sudo systemctl suspend"
+        #command="sudo /etc/acpi/handler.sh button/sleep SLPB 00000000 K"
+    ;;
+    # '[Lock]')
+    #     command="slock"
+    # ;;
+    '[Hibernate]')
+        #command="sudo pm-hibernate"
+    ;;
+    '[Cancel]')
+        #command="sudo shutdown -c"
+    ;;
+esac
+
+$(sleep "$pauseTime")
+$($command)
+

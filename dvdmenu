@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+mainMenu="[Chapter]
+[DvdNav]
+[Nav+MouseMovement]"
+
+action=$(menu "Option: " "$mainMenu")
+case "$action" in
+    *'Chapter'*)
+        chapter=`menu "Chapter #:"`
+        $(mplayer dvd://$chapter)
+    ;;
+    *'DvdNav'*)
+        $(mplayer dvdnav://)
+    ;;
+    *'Nav+MouseMovement'*)
+        $(mplayer -mouse-movements dvdnav://)
+    ;;
+esac
+

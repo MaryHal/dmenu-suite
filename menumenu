@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+menuchoices=$(ls /home/sanford/bin/menu/ -1Ap | ack -v \/)
+
+choice=$(echo "$menuchoices" | $DMENU -p "Option: ")
+[ -z "$choice" ] && exit
+
+$("/home/sanford/bin/menu/$choice")
+
