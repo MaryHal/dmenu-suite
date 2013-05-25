@@ -1,0 +1,21 @@
+#!/bin/sh
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+info=$(
+    date +"%a %B %d, %I:%M %p"
+    acpi -V
+)
+
+#PIPE="/tmp/infopipe"
+#
+#if [ ! -e "$PIPE" ]; then
+#    mkfifo "$PIPE"
+#    (dzen2 -x 2 -y 16 -w 480 -l 7 -p 2 -ta l -e 'onstart=uncollapse' < "$PIPE" 
+#     rm -f "$PIPE") &
+#fi
+#
+#(echo "$info" > "$PIPE")
+
+echo "$info" | $DMENU -l 8
+
