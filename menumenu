@@ -2,7 +2,7 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-menuchoices=$(ls /home/sanford/bin/menu/ -1Ap | ack -v \/)
+menuchoices=$(ls /home/sanford/bin/menu/ -1Ap | ag -v \/)
 
 choice=$(echo "$menuchoices" | $DMENU -p "Option: ")
 [ -z "$choice" ] && exit

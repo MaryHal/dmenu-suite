@@ -4,7 +4,7 @@ source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 feh_command="feh --bg-fill"
 wallpaper_dir="/media/shared/wallpapers/current/"
-wallpaper_options=$(ls "$wallpaper_dir" -1Ap | ack -v \/)
+wallpaper_options=$(ls "$wallpaper_dir" -1Ap | ag -v \/)
 other_options="[Random]
 "
 
@@ -12,7 +12,7 @@ choice=$(echo "$other_options$wallpaper_options" | $DMENU -l 12 -p "Option: ")
 [ -z "$choice" ] && exit
 
 if [[ "$choice" == "[Random]" ]] ; then
-    $feh_command $(find /home/sanford/shared/wallpapers/current -type f | shuf -n1)
+    $feh_command $(find "$wallpaper_dir" -maxdepth 1 -type f | shuf -n1)
 else
     $feh_command "$wallpaper_dir/$choice"
 fi

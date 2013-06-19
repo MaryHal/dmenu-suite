@@ -2,7 +2,7 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-netchoices=$(ls /etc/network.d/ -1Ap | ack -v \/)
+netchoices=$(find /etc/netctl/ -maxdepth 1 -mindepth 1 -type f)
 other="
 [Wifi-Select]"
 
@@ -12,6 +12,5 @@ choice="$(echo "$netchoices $other" | $DMENU -p "Option: ")"
 if [[ "$choice" == "[Wifi-Select]" ]]; then
     urxvtc -e "sudo wifi-select"
 else
-    sudo netcfg -a
-    sudo netcfg "$choice"
+    sudo netctl start "$choice"
 fi
