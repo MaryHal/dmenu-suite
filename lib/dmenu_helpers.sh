@@ -1,17 +1,6 @@
 #!/bin/bash
 
-# We're gonna guard against multiple instances of dmenu
-#PIPE="/tmp/dmenupipe"
-
-#if [ "$(ps --no-headers -C X)" ]; then
-#    if [ -f $HOME/.dmenurc ]; then
-#        . $HOME/.dmenurc
-#    else
-#        DMENU="dmenu -i"
-#    fi
-#else
-#    DMENU="slmenu -i"
-#fi
+# Common dmenu settings
 source $HOME/bin/menu/lib/dmenurc
 
 ###################
@@ -25,7 +14,6 @@ menu ()
 {
     # We grab the prompt message...
     prompt="$1"
-    # ...then shift to the next argument.
     shift
     # We will now iterate through the rest of the arguments...
     until [ -z "$1" ]; do
@@ -35,10 +23,10 @@ menu ()
         shift
         # ...and keep doing this until there are no more arguments.
     done
+
     # Now that we're done with that, we can feed the hungry Dmenu.
     # We feed the list though `head -c-1` first, to get rid of that
     # trailing newline, since Dmenu isn't smart enough to ignore it.
-    #echo "$items" | head -c-1 | $DMENU -i -p "$prompt"
     echo "$items" | head -c-1 | $DMENU -i -p "$prompt"
 }
 
