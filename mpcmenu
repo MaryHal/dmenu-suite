@@ -20,7 +20,6 @@ mainMenu="[Select]
 [Random]
 [Repeat]
 [Single]
-[Lyrics]
 [Update]"
 
 playlistOptions="[Add]
@@ -142,12 +141,6 @@ case "$action" in
     ;;
     '[Single]')
         mpc single -q
-    ;;
-    '[Lyrics]')
-        file=`mpc current`
-        if [ -e "/home/sanford/.lyrics/$file.txt" ]; then
-            urxvt -e vimpager "/home/sanford/.lyrics/$file.txt"
-        fi
     ;;
     '[Update]') #[Update Database]
         mpc update -q

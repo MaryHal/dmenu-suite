@@ -2,15 +2,16 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-netchoices=$(find /etc/netctl/ -maxdepth 1 -mindepth 1 -type f)
+netchoices="$(netctl list)"
 other="
-[Wifi-Select]"
+[Wifi-Menu]"
 
-choice="$(echo "$netchoices $other" | $DMENU -p "Option: ")"
+choice="$(echo "$netchoices $other" | $DMENU -l 4 -p "Option: ")"
 [ -z "$choice" ] && exit
 
-if [[ "$choice" == "[Wifi-Select]" ]]; then
-    urxvtc -e "sudo wifi-select"
+if [[ "$choice" == "[Wifi-Menu]" ]]; then
+    urxvtc -e sh -c "sudo wifi-menu"
 else
-    sudo netctl start "$choice"
+    $choice = $(echo "$choice" | cut -c 3-)
+    sudo netctl switch-to "$choice"
 fi
