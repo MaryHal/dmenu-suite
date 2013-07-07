@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # TODO:
-#   - Removing items from a playlist
+#   - More robust playlist management (even though I normally have and use only
+#     a single playlist)
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
@@ -40,7 +41,6 @@ seekOptions="0%
 80%
 90%"
 
-
 #[Random: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $5}'`]
 #[Repeat: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $3}'`]
 #[Single: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $7}'`]
@@ -50,7 +50,6 @@ seekOptions="0%
 ################
 
 action=$(menu "Option: " "$mainMenu")
-#action=$($DMENU -p "Options:" <<< "$mainMenu")
 case "$action" in
     '[Select]')
         selection=$(mpc playlist --format '%position%  %album% - %artist% - %title%' | $DMENU -i -l 12 | awk '{print $1}')
@@ -63,7 +62,7 @@ case "$action" in
         fi
     ;;
     '[Current]')
-        mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -i -l 7
+        mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -l 7
     ;;
     '[Play]')
         mpc toggle -q
@@ -75,7 +74,7 @@ case "$action" in
         mpc toggle -q
     ;;
     '[Load]')
-        choice=$($DMENU -i -p 'Playlist:' <<< "$(mpc lsplaylists)")
+        choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
         if [ -n "$choice" ]; then
             mpc stop -q
             mpc clear -q
@@ -83,7 +82,7 @@ case "$action" in
         fi
     ;;
     '[Playlist]')
-        action=$($DMENU -i -p "Playlist:" <<< "$playlistOptions")
+        action=$(menu "Option: " "$playlistOptions")
         case "$action" in
             '[Add]')
                 query=$($DMENU -p "Query:")
@@ -142,7 +141,7 @@ case "$action" in
     '[Single]')
         mpc single -q
     ;;
-    '[Update]') #[Update Database]
+    '[Update]')
         mpc update -q
     ;;
 esac
