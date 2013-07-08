@@ -3,6 +3,8 @@
 # TODO:
 #   - More robust playlist management (even though I normally have and use only
 #     a single playlist)
+#   - Remove (more) unused features?
+#   - More abstraction, tons of repeats
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
@@ -89,17 +91,17 @@ case "$action" in
                 mpc findadd $query
             ;;
             '[Remove]')
-                 selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
+                selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
                 while [ $selection ] ; do
                     mpc del $selection
-                 selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
+                    selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
                 done
             ;;
             '[Clear]')
                 mpc clear -q
             ;;
             '[Load]')
-                choice=$($DMENU -i -p 'Playlist:' <<< "$(mpc lsplaylists)")
+                choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
                 if [ -n "$choice" ]; then
                     mpc stop -q
                     mpc clear -q
