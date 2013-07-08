@@ -4,7 +4,8 @@ source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 mainMenu="[Shutdown]
 [Reboot]
-[Sleep]"
+[Sleep]
+[KillX]"
 
 action=$(menu "Option: " "$mainMenu")
 [ -z "$action" ] && exit
@@ -18,5 +19,8 @@ case "$action" in
     ;;
     '[Sleep]')
         sudo systemctl suspend
+    ;;
+    '[KillX]')
+        killall X
     ;;
 esac
