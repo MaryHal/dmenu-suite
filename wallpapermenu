@@ -3,7 +3,7 @@
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 feh_command="feh --bg-fill"
-wallpaper_dir="/media/shared/wallpapers/current/"
+wallpaper_dir="$HOME/docs/wallpapers/current"
 wallpaper_options=$(find $wallpaper_dir -maxdepth 1 -type f -exec basename {} \;)
 other_options="[Random]
 "
