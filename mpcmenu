@@ -23,6 +23,7 @@ mainMenu="[Select]
 [Random]
 [Repeat]
 [Single]
+[Lyrics]
 [Update]"
 
 playlistOptions="[Add]
@@ -143,8 +144,11 @@ case "$action" in
     '[Single]')
         mpc single -q
     ;;
+    '[Lyrics]')
+        song=$(printf "%q" "$(mpc current)")
+        urxvtc -e sh -c "vim ~/.lyrics/$song.txt"
+    ;;
     '[Update]')
         mpc update -q
     ;;
 esac
-
