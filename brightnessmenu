@@ -9,8 +9,6 @@ brightness="10
 80
 100"
 
-
 value=$(menu "Option: " "$brightness")
 
 xbacklight = $value
-
