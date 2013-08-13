@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+# Menu Items
+mainMenu="[Start]
+[Stop]
+[Restart]
+[Status]
+[List]"
+
+action=$(menu "Option: " "$mainMenu")
+case "$action" in
+    '[Start]')
+    ;;
+    '[Stop]')
+    ;;
+    '[Restart]')
+    ;;
+    '[Status]')
+    ;;
+    '[List]')
+        printf -- "%s" "$(systemctl --full  --type=service,socket --all list-unit-files | ag enabled | sed -n "s/ .*//p")"
+    ;;
+esac
+
