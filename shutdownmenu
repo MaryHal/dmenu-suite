@@ -4,23 +4,49 @@ source $HOME/bin/menu/lib/dmenu_helpers.sh
 
 mainMenu="[Shutdown]
 [Reboot]
-[Sleep]
-[Terminate X]"
+[Cancel]"
+#[Hibernate] #defunct
+#[Sleep]
+#[Lock]
+
+pauseMenu="now
+60m
+45m
+30m
+15m
+10m
+5m
+3m
+2m
+1m"
 
 action=$(menu "Option: " "$mainMenu")
 [ -z "$action" ] && exit
 
 case "$action" in
     '[Shutdown]')
-        sudo systemctl poweroff
+        pauseTime=$(menu "Pause:" "$pauseMenu")
+        [ -z "$pauseTime" ] && exit
+        command="sudo shutdown -h $pauseTime"
+        #command="sudo systemctl poweroff"
     ;;
     '[Reboot]')
-        sudo systemctl reboot
+        pauseTime=$(menu "Pause:" "$pauseMenu")
+        [ -z "$pauseTime" ] && exit
+        command="sudo shutdown -r $pauseTime"
+        #command="sudo systemctl reboot"
     ;;
     '[Sleep]')
-        sudo systemctl suspend
+        #command="sudo systemctl suspend"
+        #command="sudo /etc/acpi/handler.sh button/sleep SLPB 00000000 K"
     ;;
-    '[Terminate X]')
-        killall X
+    '[Hibernate]')
+        #command="sudo pm-hibernate"
+    ;;
+    '[Cancel]')
+        command="sudo shutdown -c"
     ;;
 esac
+
+#echo "$command"
+$($command)
