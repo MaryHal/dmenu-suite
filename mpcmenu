@@ -152,3 +152,4 @@ case "$action" in
         mpc update -q
     ;;
 esac
+
