@@ -39,10 +39,9 @@ case "$action" in
         sudo shutdown -r "$pauseTime"
     ;;
     '[Sleep]')
-        urxvtc -e sh -c "sudo systemctl suspend"
+        $TERMINAL -e sh -c "sudo systemctl suspend"
     ;;
     '[Cancel]')
         sudo shutdown -c
     ;;
 esac
-
