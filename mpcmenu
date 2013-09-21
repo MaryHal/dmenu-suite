@@ -146,7 +146,7 @@ case "$action" in
     ;;
     '[Lyrics]')
         song=$(printf "%q" "$(mpc current)")
-        urxvtc -e sh -c "vim ~/.lyrics/$song.txt"
+        $TERMINAL -e sh -c "vim ~/.lyrics/$song.txt"
     ;;
     '[Update]')
         mpc update -q
