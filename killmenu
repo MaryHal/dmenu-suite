@@ -1,0 +1,19 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+# Process name to grep for
+process=$(echo "" | $DMENU -p "Process Name: ")
+[ -z "$process" ] && exit
+
+# Get processses with pgrep, quit if none are found.
+info=$(pgrep --list-full "$process")
+[ -z "$info" ] && exit
+
+# Select with dmenu
+selection=$(echo "$info" | $DMENU -l 12 -p "Select: ")
+[ -z "$selection" ] && exit
+
+pid=$(echo "$selection" | awk '{print $1}')
+kill "$pid"
+

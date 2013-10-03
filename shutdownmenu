@@ -29,13 +29,11 @@ case "$action" in
     '[Shutdown]')
         pauseTime=$(menu "Pause:" "$pauseMenu")
         [ -z "$pauseTime" ] && exit
-
         sudo shutdown -h "$pauseTime"
     ;;
     '[Reboot]')
         pauseTime=$(menu "Pause:" "$pauseMenu")
         [ -z "$pauseTime" ] && exit
-
         sudo shutdown -r "$pauseTime"
     ;;
     '[Sleep]')
@@ -45,3 +43,4 @@ case "$action" in
         sudo shutdown -c
     ;;
 esac
+
