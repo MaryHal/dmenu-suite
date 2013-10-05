@@ -8,7 +8,7 @@ process=$(echo "" | $DMENU -p "Process Name: ")
 
 # Get processses with pgrep, quit if none are found.
 info=$(pgrep --list-full "$process")
-[ -z "$info" ] && exit
+[ -z "$info" ] && alert "No Processes Found" && exit
 
 # Select with dmenu
 selection=$(echo "$info" | $DMENU -l 12 -p "Select: ")
