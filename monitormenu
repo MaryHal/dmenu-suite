@@ -6,9 +6,9 @@ source $HOME/bin/menu/lib/dmenu_helpers.sh
 options="[Laptop]
 [External]
 [MainLeft]
-[MainRight]
-[On]
-[Off]"
+[MainRight]"
+# [On]
+# [Off]"
 
 action=$(menu "Option: " "$options")
 case "$action" in
@@ -28,11 +28,11 @@ case "$action" in
         xrandr --output LVDS1 --mode 1366x768 --right-of VGA1 --primary
         xrandr --output VGA1 --mode 1920x1080
     ;;
-    *'On'*)
-        xset dpms force on
-    ;;
-    *'Off'*)
-        xset dpms force off
-    ;;
+    # *'On'*)
+    #     xset dpms force on
+    # ;;
+    # *'Off'*)
+    #     xset dpms force off
+    # ;;
 esac
 
