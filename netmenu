@@ -9,7 +9,7 @@ netchoices="$(netctl list)"
 other="
 [Wifi-Menu]"
 
-choice="$(echo "$netchoices $other" | $DMENU -l 4 -p "Option: ")"
+choice="$(echo "$netchoices $other" | $DMENU -l 10 -p "Option: ")"
 [ -z "$choice" ] && exit
 
 if [[ "$choice" == "[Wifi-Menu]" ]]; then
