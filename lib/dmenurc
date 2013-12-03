@@ -9,4 +9,5 @@
 #font="Inconsolata:bold:size=9"
 
 font="DroidSans:bold:size=8"
-DMENU="dmenu -i -fn $font -nf #c5c8c6 -nb #1d1f21 -sf #b294bb -sb #1d1f21"
+DMENU="dmenu -i -fn $font -nf #c5c8c6 -nb #111111 -sf #b294bb -sb #111111"
+
