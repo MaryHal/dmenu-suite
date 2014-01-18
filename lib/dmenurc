@@ -1,13 +1,6 @@
 #!/bin/sh
 
-#font="-artwiz-glisp-medium-r-normal-*-11-*-*-*-*-*-iso8859-2"
-#font="Droid_Sans:bold:size=8"
-
-#DMENU='dmenu -i -fn DroidSans:bold:size=8 -nf #dcdccc -nb #1f1f1f -sf #7a9a7a -sb #1f1f1f'
-
-#font="-*-Terminus-medium-r-normal-*-12-*-*-*-*-*-iso8859-2"
-#font="Inconsolata:bold:size=9"
-
 font="DroidSansFallback:bold:size=8"
-DMENU="dmenu -i -fn $font -nf #c5c8c6 -nb #111111 -sf #b294bb -sb #111111"
+options="-i -fn $font -nf #c5c8c6 -nb #111111 -sf #b294bb -sb #111111"
+DMENU="dmenu $options"
 

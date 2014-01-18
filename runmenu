@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Common dmenu settings
+source $HOME/bin/menu/lib/dmenurc
+
+command="dmenu_run $options"
+$($command)
