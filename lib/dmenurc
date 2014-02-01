@@ -3,4 +3,3 @@
 font="DroidSansFallback:bold:size=8"
 options="-i -fn $font -nf #c5c8c6 -nb #111111 -sf #b294bb -sb #111111"
 DMENU="dmenu $options"
-
