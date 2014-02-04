@@ -1,5 +1,20 @@
 #!/bin/sh
 
+current_line="#282A2E"
+selection="#373B41"
+background="#1D1F21"
+foreground="#C5C8C6"
+
+comment="#707880"
+red="#CC6666"
+orange="#DE935F"
+yellow="#F0C674"
+green="#B5BD68"
+aqua="#8ABEB7"
+blue="#81A2BE"
+purple="#B294BB"
+
 font="DroidSansFallback:bold:size=8"
-options="-i -fn $font -nf #c5c8c6 -nb #111111 -sf #b294bb -sb #111111"
+options="-i -fn $font -nf $foreground -nb $background -sf $blue -sb $background"
 DMENU="dmenu $options"
+
