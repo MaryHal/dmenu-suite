@@ -17,4 +17,6 @@ if [[ "$choice" == "[Wifi-Menu]" ]]; then
 else
     $choice = $(echo "$choice" | cut -c 3-)
     sudo netctl switch-to "$choice"
+    notify-send "Netctl" "Switching to profile \"$choice\""
 fi
+
