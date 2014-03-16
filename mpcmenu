@@ -65,7 +65,7 @@ case "$action" in
         fi
     ;;
     '[Current]')
-        mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -l 7
+        # mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -l 7
     ;;
     '[Play]')
         mpc toggle -q
@@ -149,6 +149,7 @@ case "$action" in
         $TERMINAL -e sh -c "less ~/.lyrics/$song.txt"
     ;;
     '[Update]')
+        notify-send "MPD Database" "Updating"
         mpc update -q
     ;;
 esac
