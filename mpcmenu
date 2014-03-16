@@ -66,6 +66,7 @@ case "$action" in
     ;;
     '[Current]')
         # mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -l 7
+        notify-send "MPD:" "$(mpc current)"
     ;;
     '[Play]')
         mpc toggle -q
