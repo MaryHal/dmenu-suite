@@ -55,7 +55,7 @@ seekOptions="0%
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
     '[Select]')
-        selection=$(mpc playlist --format '%position%  %album% - %artist% - %title%' | $DMENU -i -l 12 | awk '{print $1}')
+        selection=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%' | $DMENU -i -l 12 | awk '{print $1}')
 
         # If we selected something, play it, else, don't do anything. This fixes
         # that one bug where it will play a paused song if you don't select
