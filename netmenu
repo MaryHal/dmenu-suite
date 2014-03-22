@@ -16,7 +16,13 @@ if [[ "$choice" == "[Wifi-Menu]" ]]; then
     $TERMINAL -e sh -c "sudo wifi-menu"
 else
     $choice = $(echo "$choice" | cut -c 3-)
-    sudo netctl switch-to "$choice"
     notify-send "Netctl" "Switching to profile \"$choice\""
+    status=$(sudo netctl switch-to "$choice")
+
+    if [[ $status == "0" ]]; then
+        notify-send "Netctl" "Successfully connected to \"$choice\""
+    else
+        notify-send "Netctl" "Could not connect to \"$choice\""
+    fi
 fi
 
