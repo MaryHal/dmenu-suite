@@ -9,13 +9,13 @@ netchoices="$(netctl list)"
 other="
 [Wifi-Menu]"
 
-choice="$(echo "$netchoices $other" | $DMENU -l 10 -p "Option: ")"
+choice="$(echo "$netchoices $other" | awk '{print $1}' | $DMENU -l 10 -p "Option: ")"
 [ -z "$choice" ] && exit
 
 if [[ "$choice" == "[Wifi-Menu]" ]]; then
     $TERMINAL -e sh -c "sudo wifi-menu"
 else
-    $choice = $(echo "$choice" | cut -c 3-)
+    # $choice = $(echo "$choice" | cut -c 3-)
     notify-send "Netctl" "Switching to profile \"$choice\""
     status=$(sudo netctl switch-to "$choice")
 

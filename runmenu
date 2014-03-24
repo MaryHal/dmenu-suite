@@ -12,6 +12,7 @@ else
     cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
 fi
 
+# Build Cache
 IFS=:
 if stest -dqr -n "$cache" $PATH; then
     stest -flx $PATH | sort -u > "$cache"
