@@ -31,22 +31,23 @@ case "$action" in
         pauseTime=$(menu "Pause:" "$pauseMenu")
         [ -z "$pauseTime" ] && exit
 
-        sudo shutdown -P "$pauseTime"
         notify-send "System:" "Shutdown scheduled - $pauseTime"
+        sudo shutdown -P "$pauseTime"
     ;;
     '[Reboot]')
         pauseTime=$(menu "Pause:" "$pauseMenu")
         [ -z "$pauseTime" ] && exit
 
-        sudo shutdown -r "$pauseTime"
         notify-send "System:" "Reboot scheduled - $pauseTime"
+        sudo shutdown -r "$pauseTime"
     ;;
     '[Sleep]')
-        $TERMINAL -e sh -c "sudo systemctl suspend"
+        notify-send "System:" "Suspending now"
+        sudo systemctl suspend
     ;;
     '[Cancel]')
+        notify-send "System:" "Shutdown command cancelled."
         sudo shutdown -c
-        notify-send "System:" "Shutdown command is cancelled."
     ;;
 esac
 
