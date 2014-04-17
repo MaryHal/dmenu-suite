@@ -111,11 +111,11 @@ case "$action" in
                 fi
             ;;
             '[Save]')
-                name=$($DMENU -p "Playlist Name:")
+                name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
                 mpc save "$name"
             ;;
             '[Delete]')
-                name=$($DMENU -p "Playlist Name:")
+                name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
                 mpc rm "$name"
             ;;
         esac
