@@ -2,8 +2,8 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-menuchoices=$(find ~/bin/menu/ -maxdepth 1 -type f -exec basename {} \;)
+menuchoices=$(find "$(pwd)"-maxdepth 1 -type f -exec basename {} \;)
 
 choice=$(echo "$menuchoices" | $DMENU -p "Option: ")
-[ "$choice" ] && ~/bin/menu/$choice
+[ "$choice" ] && $(pwd)/$choice
 
