@@ -83,6 +83,7 @@ case "$action" in
             mpc stop -q
             mpc clear -q
             mpc -q load "$choice"
+            notify-send "MPD:" "Playlist \"$choice\" Loaded"
         fi
     ;;
     '[Playlist]')
@@ -101,6 +102,7 @@ case "$action" in
             ;;
             '[Clear]')
                 mpc clear -q
+                notify-send "MPD:" "Playlist Cleared"
             ;;
             '[Load]')
                 choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
@@ -108,15 +110,18 @@ case "$action" in
                     mpc stop -q
                     mpc clear -q
                     mpc -q load "$choice"
+                    notify-send "MPD:" "Playlist \"$choice\" Loaded"
                 fi
             ;;
             '[Save]')
                 name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
                 mpc save "$name"
+                notify-send "MPD:" "Playlist \"$name\" Saved"
             ;;
             '[Delete]')
                 name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
                 mpc rm "$name"
+                notify-send "MPD:" "Playlist \"$name\" Deleted"
             ;;
         esac
     ;;
