@@ -2,13 +2,14 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-brightness="10
-20
-40
-60
+brightness="100
 80
-100"
+60
+40
+20"
 
 value=$(menu "Option: " "$brightness")
 
+# notify-send "Brightness:" "Setting brightness to $value"
 xbacklight = $value
+
