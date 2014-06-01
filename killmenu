@@ -15,5 +15,7 @@ selection=$(echo "$info" | $DMENU -l 12 -p "Select: ")
 [ -z "$selection" ] && exit
 
 pid=$(echo "$selection" | awk '{print $1}')
+
+notify-send "Killing Process:" "$selection"
 kill "$pid"
 

@@ -46,7 +46,7 @@ case "$action" in
         sudo systemctl suspend
     ;;
     '[Cancel]')
-        notify-send "System:" "Shutdown command cancelled."
+        notify-send "System:" "Shutdown command cancelled"
         sudo shutdown -c
     ;;
 esac
