@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+expr=$($DMENU -p "Expression: " <<< "")
+solution=$($HOME/bin/menu/lib/calc.py "$expr")
+
+done=$($DMENU -p "Solution: " <<< "$solution")
+
