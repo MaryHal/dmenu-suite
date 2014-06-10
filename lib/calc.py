@@ -45,6 +45,7 @@ if __name__ == "__main__":
     try:
         print (eval_expr(expression))
     except TypeError:
-        print ("Error: Unexpected Operators")
+        print ("Error: Unexpected Operators in \"%s\"" % expression)
     except ValueError:
-        print ("Error: Invalid Values")
+        print ("Error: Invalid Values in \"%s\"" % expression)
+

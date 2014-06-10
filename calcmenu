@@ -2,8 +2,9 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-expr=$($DMENU -p "Expression: " <<< "")
-solution=$($HOME/bin/menu/lib/calc.py "$expr")
-
-done=$($DMENU -p "Solution: " <<< "$solution")
+expr=" "
+while [[ -n "$expr" ]]; do
+    expr=$($DMENU -p "Expression: " <<< "$expr")
+    expr=$($HOME/bin/menu/lib/calc.py "$expr")
+done
 
