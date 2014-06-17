@@ -27,6 +27,7 @@ mainMenu="[Select]
 [Update]"
 
 playlistOptions="[Add]
+[AddAll]
 [Remove]
 [Clear]
 [Save]
@@ -60,7 +61,7 @@ case "$action" in
         # If we selected something, play it, else, don't do anything. This fixes
         # that one bug where it will play a paused song if you don't select
         # anything.
-        if [ -n "$selection" ]; then
+        if [[ -n "$selection" ]]; then
             mpc -q play "$selection"
         fi
     ;;
@@ -79,7 +80,7 @@ case "$action" in
     ;;
     '[Load]')
         choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
-        if [ -n "$choice" ]; then
+        if [[ -n "$choice" ]]; then
             mpc stop -q
             mpc clear -q
             mpc -q load "$choice"
@@ -92,6 +93,9 @@ case "$action" in
             '[Add]')
                 query=$($DMENU -p "Query:")
                 mpc findadd $query
+            ;;
+            '[AddAll]')
+                mpc ls | mpc add
             ;;
             '[Remove]')
                 selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
@@ -106,7 +110,7 @@ case "$action" in
             ;;
             '[Load]')
                 choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
-                if [ -n "$choice" ]; then
+                if [[ -n "$choice" ]]; then
                     mpc stop -q
                     mpc clear -q
                     mpc -q load "$choice"
@@ -133,7 +137,7 @@ case "$action" in
     ;;
     '[Seek]')
         seek=$(menu "Seek: " "$seekOptions")
-        if [ -n "$seek" ]; then
+        if [[ -n "$seek" ]]; then
             mpc seek "$seek"
         fi
     ;;
@@ -151,8 +155,14 @@ case "$action" in
         mpc single -q
     ;;
     '[Lyrics]')
-        song=$(printf "%q" "$(mpc current)")
-        $TERMINAL -e sh -c "less ~/.lyrics/$song.txt"
+        song=$(mpc current)
+        file="$HOME/.lyrics/$song.txt"
+
+        if [[ -e "$file" ]]; then
+            $TERMINAL -e sh -c "less \"$file\""
+        else
+            notify-send "MPD:" "Lyrics for \"$song\" not found"
+        fi
     ;;
     '[Update]')
         notify-send "MPD Database" "Updating"
