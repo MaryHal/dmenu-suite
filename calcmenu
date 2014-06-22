@@ -2,9 +2,10 @@
 
 source $HOME/bin/menu/lib/dmenu_helpers.sh
 
-expr=" "
+expr=$($DMENU -p "Expression: " <<< "")
+
 while [[ -n "$expr" ]]; do
-    expr=$($DMENU -p "Expression: " <<< "$expr")
     expr=$($HOME/bin/menu/lib/calc.py "$expr")
+    expr=$($DMENU -p "$expr: " <<< "")
 done
 
