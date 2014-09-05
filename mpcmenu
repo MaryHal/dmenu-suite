@@ -95,6 +95,7 @@ case "$action" in
                 mpc findadd $query
             ;;
             '[AddAll]')
+                mpc update -q
                 mpc ls | mpc add
             ;;
             '[Remove]')
