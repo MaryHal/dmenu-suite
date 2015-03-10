@@ -1,0 +1,8 @@
+#!/bin/bash
+
+source $HOME/bin/menu/lib/dmenu_helpers.sh
+
+windowname=$(echo "" | $DMENU -p "Window Search: ")
+size=$(echo "" | $DMENU -p "Window Size: ")
+
+wmctrl -r "$windowname" -e 0,0,0,$size
