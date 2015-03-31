@@ -2,20 +2,10 @@
 
 source $HOME/bin/menu/lib/menu_helpers.sh
 
-# Process name to grep for
-process=$(echo "" | $MenuCmd --prompt "Process Name: ")
-[ -z "$process" ] && exit
-
-# Get processses with pgrep, quit if none are found.
-info=$(pgrep --list-full "$process")
-[ -z "$info" ] && alert "No Processes Found" && exit
-
 # Select with dmenu
-selection=$(echo "$info" | $MenuCmd --prompt "Select: ")
+selection=$(ps -ef | sed 1d | $MenuCmd | awk '{print $2}' | tr '\n' ' ')
 [ -z "$selection" ] && exit
 
-pid=$(echo "$selection" | awk '{print $1}')
-
 notify-send "Killing Process:" "$selection"
-kill "$pid"
+kill "$selection"
 
