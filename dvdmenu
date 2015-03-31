@@ -9,14 +9,14 @@ mainMenu="[Chapter]
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
     *'Chapter'*)
-        chapter=`menu "Chapter #:"`
-        $(mplayer dvd://$chapter)
+        chapter=$(menu "Chapter #:")
+        $(mpv dvd://$chapter)
     ;;
     *'DvdNav'*)
-        $(mplayer dvdnav://)
+        $(mpv dvdnav://)
     ;;
     *'Nav+MouseMovement'*)
-        $(mplayer -mouse-movements dvdnav://)
+        $(mpv -mouse-movements dvdnav://)
     ;;
 esac
 

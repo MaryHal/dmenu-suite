@@ -3,6 +3,6 @@
 source $HOME/bin/menu/lib/menu_helpers.sh
 
 menuchoices=$(find "$HOME/bin/menu/"  -maxdepth 1 -type f -exec basename {} \;)
+choice=$(menu "Option: " "$menuchoices")
 
-choice=$(echo "$menuchoices" | $MenuCmd --prompt "Option: ")
 [ "$choice" ] && $("$HOME/bin/menu/$choice")

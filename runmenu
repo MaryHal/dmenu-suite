@@ -19,8 +19,8 @@ if stest -dqr -n "$cache" $PATH; then
     stest -flx $PATH | sort -u > "$cache"
 fi
 
-app=$($MenuCmd < "$cache")
+app=$(menu "Run:" "$(cat $cache)")
 
-[ -n $app ] && nohup "$app" > /dev/null 2>&1 &
+[[ -n $app ]] && nohup "$app" > /dev/null 2>&1 &
 
 sleep 0.1s

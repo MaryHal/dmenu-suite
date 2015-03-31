@@ -7,4 +7,5 @@ info=$(
     acpi -ba
 )
 
-echo "$info" | $MenuCmd
+menu "" "$info"
+
