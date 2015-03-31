@@ -5,11 +5,11 @@ source $HOME/bin/menu/lib/menu_helpers.sh
 current=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 # read -r available < /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
 available=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors | sed 's/ /\n/g')
-gov=$(printf "$available" | $MenuCmd --prompt "[$current] Governors: ")
+# gov=$(printf "$available" | $MenuCmd --prompt "[$current] Governors: ")
 
-if [[ -z $gov ]]; then
-    exit
-else
-    sudo -A cpupower frequency-set -g $gov
-fi
+gov=$(menu "[$current]: " "$available")
+
+[[ -z $gov ]] && exit
+
+sudo -A cpupower frequency-set -g $gov
 

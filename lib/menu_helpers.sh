@@ -1,14 +1,16 @@
 #!/bin/bash
 
-MenuCmd=""
-USE_FZF=1
+MenuProg=""
+
+# Do not use fzf by default
+USE_FZF=${1:-0}
 
 if [[ $USE_FZF == 1 ]]; then
-    MenuCmd="fzf"
+    MenuProg="fzf -x"
 else
     # Common dmenu settings
     source $HOME/bin/menu/lib/dmenurc
-    MenuCmd="$DMENU -l 12"
+    MenuProg="$DMENU -l 12"
 fi
 
 ###################
@@ -23,6 +25,8 @@ menu ()
     # We grab the prompt message...
     prompt="$1"
     shift
+
+    items=""
     # We will now iterate through the rest of the arguments...
     until [ -z "$1" ]; do
         # ...add the menu item to the list we're going to feed to Dmenu...
@@ -31,6 +35,18 @@ menu ()
         shift
         # ...and keep doing this until there are no more arguments.
     done
+
+    # Prompt "Adapter" for dmenu/fzf
+    MenuCmd="$MenuProg"
+    if [[ -n "$prompt" ]]; then
+        if [[ $USE_FZF == 1 ]]; then
+            MenuCmd="$MenuCmd --prompt $prompt"
+        else
+            # Common dmenu settings
+            source $HOME/bin/menu/lib/dmenurc
+            MenuCmd="$MenuCmd -p $prompt"
+        fi
+    fi
 
     # Now that we're done with that, we can feed the hungry Dmenu.
     # We feed the list though `head -c-1` first, to get rid of that
