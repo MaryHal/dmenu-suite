@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
-windowname=$(echo "" | $DMENU -p "Window Search: ")
-size=$(echo "" | $DMENU -p "Window Size: ")
+windowname=$(echo "" | $MenuCmd --prompt "Window Search: ")
+size=$(echo "" | $MenuCmd --prompt "Window Size: ")
 
 wmctrl -r "$windowname" -e 0,0,0,$size

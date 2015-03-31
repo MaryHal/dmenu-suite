@@ -3,7 +3,7 @@
 # Dmenu shutdown menu.
 # This script assumes you can run "shutdown" as a user through sudo without
 # entering a password. This can be done by editing /etc/sudoers via visudo.
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
 mainMenu="[Shutdown]
 [Reboot]

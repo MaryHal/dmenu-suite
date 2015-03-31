@@ -6,7 +6,7 @@
 #   - Remove (more) unused features?
 #   - More abstraction, tons of repeats
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
 # Menu Items
 mainMenu="[Select]
@@ -56,7 +56,7 @@ seekOptions="0%
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
     '[Select]')
-        selection=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%' | $DMENU -i -l 12 | awk '{print $1}')
+        selection=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%' | $MenuCmd | awk '{print $1}')
 
         # If we selected something, play it, else, don't do anything. This fixes
         # that one bug where it will play a paused song if you don't select
@@ -66,7 +66,7 @@ case "$action" in
         fi
     ;;
     '[Current]')
-        # mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $DMENU -l 7
+        # mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ' | $MenuCmd
         notify-send "MPD:" "$(mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ')"
     ;;
     '[Play]')
@@ -79,7 +79,7 @@ case "$action" in
         mpc toggle -q
     ;;
     '[Load]')
-        choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
+        choice=$(mpc lsplaylists | $MenuCmd)
         if [[ -n "$choice" ]]; then
             mpc stop -q
             mpc clear -q
@@ -91,7 +91,7 @@ case "$action" in
         action=$(menu "Option: " "$playlistOptions")
         case "$action" in
             '[Add]')
-                query=$($DMENU -p "Query:")
+                query=$($MenuCmd)
                 mpc findadd $query
             ;;
             '[AddAll]')
@@ -99,10 +99,10 @@ case "$action" in
                 mpc ls | mpc add
             ;;
             '[Remove]')
-                selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
+                selection=$(mpc playlist --format '%position%  %title%' | $MenuCmd | awk '{print $1}')
                 while [ $selection ] ; do
                     mpc del $selection
-                    selection=$(mpc playlist --format '%position%  %title%' | $DMENU -i -t -l 12 | awk '{print $1}')
+                    selection=$(mpc playlist --format '%position%  %title%' | $MenuCmd | awk '{print $1}')
                 done
             ;;
             '[Clear]')
@@ -110,7 +110,7 @@ case "$action" in
                 notify-send "MPD:" "Playlist Cleared"
             ;;
             '[Load]')
-                choice=$(mpc lsplaylists | $DMENU -p 'Playlist:')
+                choice=$(mpc lsplaylists | $MenuCmd)
                 if [[ -n "$choice" ]]; then
                     mpc stop -q
                     mpc clear -q
@@ -119,12 +119,12 @@ case "$action" in
                 fi
             ;;
             '[Save]')
-                name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
+                name=$(mpc lsplaylists | $MenuCmd)
                 mpc save "$name"
                 notify-send "MPD:" "Playlist \"$name\" Saved"
             ;;
             '[Delete]')
-                name=$(mpc lsplaylists | $DMENU -p 'Playlist:')
+                name=$(mpc lsplaylists | $MenuCmd)
                 mpc rm "$name"
                 notify-send "MPD:" "Playlist \"$name\" Deleted"
             ;;

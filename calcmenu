@@ -1,11 +1,10 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
-expr=$($DMENU -p "Expression: " <<< "")
+expr=$($MenuCmd --prompt "Expression: " <<< "")
 
 while [[ -n "$expr" ]]; do
     expr=$($HOME/bin/menu/lib/calc.py "$expr")
-    expr=$($DMENU -p "$expr: " <<< "")
+    expr=$($MenuCmd --prompt "$expr: " <<< "")
 done
-

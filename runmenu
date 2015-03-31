@@ -1,7 +1,9 @@
 #!/bin/sh
 
-# Common dmenu settings
-source $HOME/bin/menu/lib/dmenurc
+source $HOME/bin/menu/lib/menu_helpers.sh
+
+# # Common dmenu settings
+# source $HOME/bin/menu/lib/dmenurc
 
 # dmenu_run $options
 
@@ -13,13 +15,11 @@ else
 fi
 
 # Build Cache
-IFS=:
 if stest -dqr -n "$cache" $PATH; then
     stest -flx $PATH | sort -u > "$cache"
 fi
 
-# Restore IFS because font string in $DMENU contains ':'
-IFS=$' \t\n'
-app=$($DMENU < "$cache")
+app=$($MenuCmd < "$cache")
 
-[ -n $app ] && exec $app & disown
+# [ -n $app ] && exec $app & disown
+exec $app

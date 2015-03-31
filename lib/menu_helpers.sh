@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# Common dmenu settings
-source $HOME/bin/menu/lib/dmenurc
+MenuCmd=""
+USE_FZF=1
+
+if [[ $USE_FZF == 1 ]]; then
+    MenuCmd="fzf"
+else
+    # Common dmenu settings
+    source $HOME/bin/menu/lib/dmenurc
+    MenuCmd="$DMENU -l 12"
+fi
 
 ###################
 ## Functions
@@ -27,7 +35,7 @@ menu ()
     # Now that we're done with that, we can feed the hungry Dmenu.
     # We feed the list though `head -c-1` first, to get rid of that
     # trailing newline, since Dmenu isn't smart enough to ignore it.
-    echo "$items" | head -c-1 | $DMENU -i -p "$prompt"
+    echo "$items" | head -c-1 | $MenuCmd
 }
 
 # We can use menu() function for yes/no prompts.

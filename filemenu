@@ -1,13 +1,13 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
 cd /home/sanford/
 
 file=1
 while [ "$file" ]; do
     fileList=$(find $(pwd) -maxdepth 1 -exec basename {} \;)
-    file=$(echo "$fileList" | $DMENU -l 10 -p "$(pwd) > ")
+    file=$(echo "$fileList" | $MenuCmd --prompt "$(pwd) > ")
 
     if [ -e "$file" ]; then
         owd=$(pwd)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
 feh_command="feh --bg-fill"
 wallpaper_dir="$HOME/docs/wallpapers/current"
@@ -8,7 +8,7 @@ wallpaper_options=$(find $wallpaper_dir -maxdepth 1 -type f -exec basename {} \;
 other_options="[Random]
 "
 
-choice=$(echo "$other_options$wallpaper_options" | $DMENU -l 12 -p "Option: ")
+choice=$(echo "$other_options$wallpaper_options" | $MenuCmd)
 [ -z "$choice" ] && exit
 
 if [[ "$choice" == "[Random]" ]] ; then

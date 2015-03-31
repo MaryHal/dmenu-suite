@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/dmenu_helpers.sh
+source $HOME/bin/menu/lib/menu_helpers.sh
 
 # Menu Items
 options="[Laptop]
