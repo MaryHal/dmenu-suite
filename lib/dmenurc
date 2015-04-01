@@ -1,20 +1,20 @@
 #!/bin/sh
 
-current_line="#282A2E"
-selection="#373B41"
-background="#1D1F21"
-foreground="#C5C8C6"
-
+background="#1d1f21"
+current_line="#282a2e"
+selection="#373b41"
+foreground="#c5c8c6"
 comment="#707880"
-red="#CC6666"
-orange="#DE935F"
-yellow="#F0C674"
-green="#B5BD68"
-aqua="#8ABEB7"
-blue="#81A2BE"
-purple="#B294BB"
+red="#cc6666"
+orange="#de935f"
+yellow="#f0c674"
+green="#b5bd68"
+aqua="#8abeb7"
+blue="#81a2be"
+purple="#b294bb"
+
 
 font="DroidSansFallback:bold:size=8"
-options="-i -fn $font -nf $foreground -nb $background -sf $blue -sb $background"
+options="-i -fn $font -nf $foreground -nb $background -sf $background -sb $purple"
 DMENU="dmenu $options"
 
