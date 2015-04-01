@@ -1,5 +1,4 @@
 #!/bin/bash
-# Dmenu shutdown menu.
 # This script assumes you can run "netctl" as a user through sudo without
 # entering a password. This can be done by editing /etc/sudoers via visudo.
 
