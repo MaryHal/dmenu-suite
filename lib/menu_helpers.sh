@@ -42,8 +42,7 @@ menu ()
         if [[ $USE_FZF == 1 ]]; then
             MenuCmd="$MenuCmd --prompt $prompt"
         else
-            # Common dmenu settings
-            source $HOME/bin/menu/lib/dmenurc
+            # Dmenu prompt switch
             MenuCmd="$MenuCmd -p $prompt"
         fi
     fi
@@ -51,7 +50,8 @@ menu ()
     # Now that we're done with that, we can feed the hungry Dmenu.
     # We feed the list though `head -c-1` first, to get rid of that
     # trailing newline, since Dmenu isn't smart enough to ignore it.
-    echo "$items" | head -c-1 | $MenuCmd
+    result=$(echo "$items" | head -c-1 | $MenuCmd)
+    echo $result
 }
 
 # We can use menu() function for yes/no prompts.
