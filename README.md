@@ -8,19 +8,19 @@ Everyone's *nix setups are different. As such, these scripts fit my personal use
 Included Scripts
 ================
 
-brightnessmenu -> set laptop monitor brightness with xbacklight.
-cpumenu -> query and set system's enabled cpu profiles.
-dvdmenu -> navigate dvd with mpv.
-infomenu -> display some system information with acpi.
-killmenu -> kill processes.
-menumenu -> menu to select these menus.
-monitormenu -> setup (preconfigured, hardcoded) monitor layouts with xrandr.
-mpcmenu -> interface for [mpd](http://www.musicpd.org/) (using [mpc](http://linux.die.net/man/1/mpc)).
-netmenu -> wifi profile select using netctl.
-runmenu -> list and run programs in user's $PATH.
-shutdownmenu -> shutdown, reboot, and sleep.
-wallpapermenu -> select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
-wmmenu -> unfinished script to interact with wmctrl.
+    brightnessmenu -> set laptop monitor brightness with xbacklight.
+    cpumenu        -> query and set system's enabled cpu profiles.
+    dvdmenu        -> navigate dvd with mpv.
+    infomenu       -> display some system information with acpi.
+    killmenu       -> kill processes.
+    menumenu       -> menu to select these menus.
+    monitormenu    -> setup (preconfigured, hardcoded) monitor layouts with xrandr.
+    mpcmenu        -> interface for [mpd](http://www.musicpd.org/) (using [mpc](http://linux.die.net/man/1/mpc)).
+    netmenu        -> wifi profile select using netctl.
+    runmenu        -> list and run programs in user's $PATH.
+    shutdownmenu   -> shutdown, reboot, and sleep.
+    wallpapermenu  -> select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
+    wmmenu         -> unfinished script to interact with wmctrl.
 
 Possible Usage
 ==============
