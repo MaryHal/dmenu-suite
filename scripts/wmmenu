@@ -2,8 +2,8 @@
 
 source $HOME/bin/menu/lib/menu_helpers.sh
 
-windowname=$(menu "WindowSearch:" "")
-size=$(menu "Size:" "")
+windowname=$(menu "WindowSearch: " "")
+size=$(menu "Size: " "")
 
 # windowname=$(echo "" | $MenuCmd --prompt "Window Search: ")
 # size=$(echo "" | $MenuCmd --prompt "Window Size: ")

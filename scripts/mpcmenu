@@ -53,11 +53,11 @@ seekOptions="0%
 ##### Main #####
 ################
 
-action=$(menu "Option:" "$mainMenu")
+action=$(menu "Option: " "$mainMenu")
 case "$action" in
     '[Select]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
-        selection=$(menu "" "$candidates")
+        selection=$(menu "Song: " "$candidates")
 
         # If we selected something, play it, else, don't do anything. This fixes
         # that one bug where it will play a paused song if you don't select
