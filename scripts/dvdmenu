@@ -9,7 +9,7 @@ mainMenu="[Chapter]
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
     *'Chapter'*)
-        chapter=$(menu "Chapter #:")
+        chapter=$(menu "Chapter #: ")
         $(mpv dvd://$chapter)
     ;;
     *'DvdNav'*)

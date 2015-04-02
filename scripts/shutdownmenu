@@ -28,14 +28,14 @@ action=$(menu "Option: " "$mainMenu")
 
 case "$action" in
     '[Shutdown]')
-        pauseTime=$(menu "Pause:" "$pauseMenu")
+        pauseTime=$(menu "Pause: " "$pauseMenu")
         [ -z "$pauseTime" ] && exit
 
         notify-send "System:" "Shutdown scheduled - $pauseTime"
         sudo shutdown -P "$pauseTime"
     ;;
     '[Reboot]')
-        pauseTime=$(menu "Pause:" "$pauseMenu")
+        pauseTime=$(menu "Pause: " "$pauseMenu")
         [ -z "$pauseTime" ] && exit
 
         notify-send "System:" "Reboot scheduled - $pauseTime"

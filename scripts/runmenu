@@ -19,7 +19,7 @@ if stest -dqr -n "$cache" $PATH; then
     stest -flx $PATH | sort -u > "$cache"
 fi
 
-app=$(menu "Run:" "$(cat $cache)")
+app=$(menu "Run: " "$(cat $cache)")
 
 [[ -n $app ]] && nohup "$app" > /dev/null 2>&1 &
 

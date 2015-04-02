@@ -8,7 +8,7 @@ netchoices="$(netctl list)"
 other="
 [Wifi-Menu]"
 
-choice=$(menu "Wifi:" "$(echo "$netchoices $other" | sed 's/^ *//')")
+choice=$(menu "Wifi: " "$(echo "$netchoices $other" | sed 's/^ *//')")
 [[ -z "$choice" ]] && exit
 
 if [[ "$choice" == "[Wifi-Menu]" ]]; then

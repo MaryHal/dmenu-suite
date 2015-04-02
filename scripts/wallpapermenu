@@ -9,7 +9,7 @@ wallpaper_files=$(find $wallpaper_dir -maxdepth 1 -type f -exec basename {} \;)
 other_options="
 [Random]"
 
-choice=$(menu "File:" "$wallpaper_files $other_options")
+choice=$(menu "File: " "$wallpaper_files $other_options")
 
 [[ -z "$choice" ]] && exit
 

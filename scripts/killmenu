@@ -3,7 +3,7 @@
 source $HOME/bin/menu/lib/menu_helpers.sh
 
 processList=$(ps -ef | sed 1d)
-selection=$(menu "Kill:" "$processList")
+selection=$(menu "Kill: " "$processList")
 [[ -z "$selection" ]] && exit
 
 pid=$(awk '{print $2}' <<< "$selection" | tr '\n' ' ')
