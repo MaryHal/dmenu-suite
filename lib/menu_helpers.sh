@@ -23,11 +23,6 @@ esac
 
 function getPromptOption ()
 {
-    local prompt="$1"
-    local promptOption=""
-
-    [[ -z "$prompt" ]] && promptOption=""
-
     case "$BACKEND" in
         'fzf')
             promptOption="--prompt"
