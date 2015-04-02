@@ -8,14 +8,15 @@ if [ -d "$cachedir" ]; then
 else
 	cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
 fi
-$(
-    IFS=:
-    if stest -dqr -n "$cache" $PATH; then
-	candidates=$(stest -flx $PATH | sort -u | tee "$cache")
-        IFS=$' \t\n'
-        echo "$candidates" | $DMENU "$@"
-    else
-        IFS=$' \t\n'
-	$DMENU "$@" < "$cache"
-    fi
-) &
+
+IFS=:
+if stest -dqr -n "$cache" $PATH; then
+    candidates=$(stest -flx $PATH | sort -u | tee "$cache")
+    IFS=$' \t\n'
+    app=$(echo "$candidates" | $MenuProg $(getPromptOption) "Run: ")
+else
+    IFS=$' \t\n'
+    app=$($MenuProg $(getPromptOption) "Run: " < "$cache")
+fi
+
+[[ -n $app ]] && exec $app & disown
