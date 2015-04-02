@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 source $HOME/bin/menu/lib/menu_helpers.sh
 
@@ -13,10 +13,10 @@ IFS=:
 if stest -dqr -n "$cache" $PATH; then
     candidates=$(stest -flx $PATH | sort -u | tee "$cache")
     IFS=$' \t\n'
-    app=$(echo "$candidates" | $MenuProg $(getPromptOption) "Run: ")
+    app=$($MenuProg $promptOption "Run: " <<< "$candidates" )
 else
     IFS=$' \t\n'
-    app=$($MenuProg $(getPromptOption) "Run: " < "$cache")
+    app=$($MenuProg $promptOption "Run: " < "$cache")
 fi
 
 [[ -n $app ]] && exec $app & disown
