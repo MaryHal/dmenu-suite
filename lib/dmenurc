@@ -13,8 +13,6 @@ aqua="#8abeb7"
 blue="#81a2be"
 purple="#b294bb"
 
-
 font="DroidSansFallback:bold:size=8"
 options="-i -fn $font -nf $foreground -nb $background -sf $background -sb $purple"
 DMENU="dmenu $options"
-
