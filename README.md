@@ -25,18 +25,18 @@ Included Scripts
 Possible Usage
 ==============
 
-All scripts take a single optional argument (1 or 0) to decide whether to use fzf or not. If this argument is excluded, dmenu is used by default.
+All scripts take a single optional argument to decide which backend to use. If this argument is excluded, dmenu is used by default. Backends supported: fzf, dmenu, and rofi.
 
 Run mpcmenu (interface for mpd client) with dmenu inside current terminal:
 
-    ~/bin/menu/scripts/mpcmenu 0
+    ~/bin/menu/scripts/mpcmenu dmenu
 
 Run mpcmenu in a new terminal emulator (urxvt) window with fzf:
 
-    urxvt -name "fzf-menu" -geometry 80x24 -e ~/bin/menu/scripts/mpcmenu 1
+    urxvt -name "fzf-menu" -geometry 80x24 -e ~/bin/menu/scripts/mpcmenu fzf
 
 We set an interface name for our urxvt window so we can allow a window manager to specifically manage these menus. For example, [bspwm](https://github.com/baskerville/bspwm) allows us to set rules for window interfaces:
 
     bspc rule -a fzf-menu floating=on,center=on,monitor=LVDS1,follow=on
 
-With this, our fzf-enabled menus will be floating and centered on my laptop monitor. It will also focus itself if I run it from any other monitor.
+With this, my fzf-enabled menus will be floating and centered on my laptop monitor. It will also focus itself if I run it from any other monitor.
