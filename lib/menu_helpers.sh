@@ -2,7 +2,7 @@
 
 MenuProg=""
 promptOption=""
-BACKEND=${1:-dmenu}
+BACKEND=${1:-fzf}
 
 case "$BACKEND" in
     'fzf')

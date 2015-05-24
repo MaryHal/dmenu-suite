@@ -26,9 +26,9 @@ Included Scripts
 Possible Usage
 ==============
 
-All scripts take a single optional argument to decide which backend to use. If this argument is excluded, dmenu is used by default. Backends supported: fzf, dmenu, and rofi.
+All scripts take a single optional argument to decide which backend to use. If this argument is excluded, fzf is used by default. Backends supported: fzf, dmenu, and rofi.
 
-Run mpcmenu (interface for mpd client) with dmenu inside current terminal:
+Run mpcmenu (interface for mpd client) with dmenu:
 
     ~/bin/menu/scripts/mpcmenu dmenu
 
