@@ -1,0 +1,6 @@
+#!/bin/sh
+
+command="$1"
+name=$(basename $command)
+
+flock -n /tmp/$name.lock $command
