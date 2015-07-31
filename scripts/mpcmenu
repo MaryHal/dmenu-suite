@@ -23,8 +23,8 @@ mainMenu="[Select]
 [Random]
 [Repeat]
 [Single]
-[Lyrics]
 [Update]"
+# [Lyrics]
 
 playlistOptions="[Add]
 [AddAll]
@@ -161,19 +161,18 @@ case "$action" in
     '[Single]')
         mpc single -q
     ;;
-    '[Lyrics]')
-        song=$(mpc current)
-        file="$HOME/.lyrics/$song.txt"
+    # '[Lyrics]')
+    #     song=$(mpc current)
+    #     file="$HOME/.lyrics/$song.txt"
 
-        if [[ -e "$file" ]]; then
-            $TERMINAL -e sh -c "less \"$file\""
-        else
-            notify-send "MPD:" "Lyrics for \"$song\" not found"
-        fi
-    ;;
+    #     if [[ -e "$file" ]]; then
+    #         $TERMINAL -e sh -c "less \"$file\""
+    #     else
+    #         notify-send "MPD:" "Lyrics for \"$song\" not found"
+    #     fi
+    # ;;
     '[Update]')
         notify-send "MPD Database" "Updating"
         mpc update -q
     ;;
 esac
-
