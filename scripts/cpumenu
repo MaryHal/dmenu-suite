@@ -11,5 +11,5 @@ gov=$(menu "[$current]: " "$available")
 
 [[ -z $gov ]] && exit
 
-sudo -A cpupower frequency-set -g $gov
-
+# No longer use sudo -A. Use visudo to allow user to run cpupower.
+sudo cpupower frequency-set -g $gov

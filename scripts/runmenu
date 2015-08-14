@@ -4,9 +4,9 @@ source $HOME/bin/menu/lib/menu_helpers.sh
 
 cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 if [[ -d "$cachedir" ]]; then
-	cache=$cachedir/dmenu_run
+    cache=$cachedir/dmenu_run
 else
-	cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
+   cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
 fi
 
 IFS=:
@@ -19,7 +19,7 @@ else
     app=$($MenuProg $promptOption "Run: " < "$cache")
 fi
 
-[[ -n $app ]] && exec $app & disown
+[[ -n $app ]] && exec "$app" & disown
 
 if [[ "$BACKEND" -eq "fzf" ]]; then
     sleep 0.1s
