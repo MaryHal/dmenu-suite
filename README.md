@@ -41,3 +41,17 @@ We set an interface name for our urxvt window so we can allow a window manager t
     bspc rule -a fzf-menu floating=on,center=on,monitor=LVDS1,follow=on
 
 With this, my fzf-enabled menus will be floating and centered on my laptop monitor. It will also focus itself if I run it from any other monitor.
+
+A useful concept relevant to these scripts are [semaphores](https://en.wikipedia.org/wiki/Semaphore_(programming)) (in particular, lockfiles). What lockfiles will allow use to do is to ensure that there is only one running menu at a time. There are many tools to do this: [lockfile](http://linux.die.net/man/1/lockfile), [flock](http://linux.die.net/man/1/flock), and some [homegrown](http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) (albeit flawed) solutions. `lockwrap` is an extremely simple script that will pass your command to flock under a predefined lock name:
+
+Inside lockwrap:
+
+    #!/bin/sh
+    flock -n /tmp/menusuite.lock -c $@
+
+Usage:
+
+    $ ./lockwrap ./mpcmenu
+    $ ./lockwrap alsamixer
+
+If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile. I've accidentally held down one of my hotkeys that opens these menus causing a dozen terminals/menus to open. The addition of lockfiles will take care of mishaps like that.
