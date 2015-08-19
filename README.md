@@ -7,21 +7,22 @@ Everyone's *nix setups are different. As such, these scripts fit my personal use
 
 Included Scripts
 ================
-| Script         | Description
-| -------------- | -----------
-| brightnessmenu | Set laptop monitor brightness.
-| cpumenu        | Query and set system's enabled cpu profiles.
-| dvdmenu        | Navigate dvd with mpv.
-| infomenu       | Display some system information with acpi.
-| killmenu       | Kill processes.
-| menumenu       | Menu to select menus.
-| monitormenu    | Setup (preconfigured, hardcoded) monitor layouts with xrandr.
-| mpcmenu        | Interface for [mpd](http://www.musicpd.org/) (using [mpc](http://linux.die.net/man/1/mpc)).
-| netmenu        | Wifi profile select using netctl.
-| runmenu        | List and run programs in user's $PATH.
-| shutdownmenu   | Shutdown, reboot, and sleep.
-| wallpapermenu  | Select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
-| wmmenu         | Unfinished script to interact with wmctrl.
+| Script             | Description
+| --------------     | -----------
+| i3windowSelect.py  | Jump-to-window/workspace in [i3](http://i3wm.org/) (dmenu only)
+| brightnessmenu     | Set laptop monitor brightness.
+| cpumenu            | Query and set system's enabled cpu profiles.
+| dvdmenu            | Navigate dvd with mpv.
+| infomenu           | Display some system information with acpi.
+| killmenu           | Kill processes.
+| menumenu           | Menu to select menus.
+| monitormenu        | Setup (preconfigured, hardcoded) monitor layouts with xrandr.
+| mpcmenu            | Interface for [mpd](http://www.musicpd.org/) (using [mpc](http://linux.die.net/man/1/mpc)).
+| netmenu            | Wifi profile select using netctl.
+| runmenu            | List and run programs in user's $PATH.
+| shutdownmenu       | Shutdown, reboot, and sleep.
+| wallpapermenu      | Select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
+| wmmenu             | Unfinished script to interact with wmctrl.
 
 Possible Usage
 ==============
