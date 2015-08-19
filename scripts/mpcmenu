@@ -7,7 +7,7 @@
 #   - More abstraction, tons of repeats
 
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-source $MENU_DIR/../lib/menu_helpers.sh
+source $MENU_DIR/lib/menu_helpers.sh
 
 # Menu Items
 mainMenu="[Select]
