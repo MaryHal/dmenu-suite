@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Set to 1 is you want to use dmenurc instead of reading from the Xresources
+# database (patched dmenu only (like dmenu2))
+USE_DMENURC=0
+
 MenuProg=""
 promptOption=""
 BACKEND=${1:-fzf}
@@ -10,7 +14,11 @@ case "$BACKEND" in
         promptOption="--prompt"
         ;;
     'dmenu')
-        source $HOME/bin/menu/lib/dmenurc
+        if [[ $USE_DMENURC == 1 ]]; then
+            source $HOME/bin/menu/lib/dmenurc
+        else
+            DMENU="dmenu"
+        fi
 
         # Dmenu2 implements the '-s' option which allows us to choose which
         # monitor to open our menu on.
