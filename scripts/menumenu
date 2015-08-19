@@ -1,8 +1,9 @@
 #!/bin/bash
 
-source $HOME/bin/menu/lib/menu_helpers.sh
+MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source $MENU_DIR/../lib/menu_helpers.sh
 
-menuchoices=$(find "$HOME/bin/menu/scripts/"  -maxdepth 1 -type f -exec basename {} \;)
+menuchoices=$(find "$MENU_DIR"  -maxdepth 1 -type f -exec basename {} \;)
 choice=$(menu "Option: " "$menuchoices")
 
 [[ -e "$HOME/bin/menu/scripts/$choice" ]] && exec $HOME/bin/menu/scripts/$choice "$1"

@@ -6,7 +6,8 @@
 #   - Remove (more) unused features?
 #   - More abstraction, tons of repeats
 
-source $HOME/bin/menu/lib/menu_helpers.sh
+MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source $MENU_DIR/../lib/menu_helpers.sh
 
 # Menu Items
 mainMenu="[Select]
