@@ -9,9 +9,10 @@ source $MENU_DIR/lib/menu_helpers.sh
 mainMenu="[Shutdown]
 [Reboot]
 [Sleep]
-[Cancel]"
+[Lock]
+[Cancel]
+"
 #[Hibernate] #defunct
-#[Lock]
 
 pauseMenu="now
 +60
@@ -46,9 +47,11 @@ case "$action" in
         notify-send "System:" "Suspending now"
         sudo systemctl suspend
     ;;
+    '[Lock]')
+        i3lock --show-failed-attempts --color=EEEEEE &
+    ;;
     '[Cancel]')
         notify-send "System:" "Shutdown command cancelled"
         sudo shutdown -c
     ;;
 esac
-
