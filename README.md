@@ -42,6 +42,24 @@ We set an interface name for our urxvt window so we can allow a window manager t
 
 With this, my fzf-enabled menus will be floating and centered on my laptop monitor. It will also focus itself if I run it from any other monitor.
 
+Xresources
+==========
+
+If you choose to use dmenu, `lib/menu_helpers` has a `USE_DMENURC` flag if you choose to not use the Xresources database (or don't have a version of dmenu that supports it). You should set that flag to `1` and modify `lib/dmenurc` in that case.
+
+If you choose to go the Xresources route, you can specify options in your `.Xresources` file. For example, dmenu2 reads these:
+
+    dmenu.font:          DroidSansFallback:bold:size=8
+    dmenu.foreground:    #C7CCD1
+    dmenu.background:    #1C2023
+    dmenu.selbackground: #95AEC7
+    dmenu.selforeground: #1C2023
+
+Remember to run `xrdb -merge ~/.Xresources` to load these new values!
+
+Lockfiles
+=========
+
 A useful concept relevant to these scripts are [semaphores](https://en.wikipedia.org/wiki/Semaphore_(programming)) (in particular, lockfiles). What lockfiles will allow use to do is to ensure that there is only one running menu at a time. There are many tools to do this: [lockfile](http://linux.die.net/man/1/lockfile), [flock](http://linux.die.net/man/1/flock), and some [homegrown](http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) (albeit flawed) solutions. `lockwrap` is an extremely simple script that will pass your command to flock under a predefined lock name:
 
 Inside lockwrap:
@@ -55,3 +73,4 @@ Usage:
     $ ./lockwrap alsamixer
 
 If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile. I've accidentally held down one of my hotkeys that opens these menus causing a dozen terminals/menus to open. The addition of lockfiles will take care of mishaps like that.
+
