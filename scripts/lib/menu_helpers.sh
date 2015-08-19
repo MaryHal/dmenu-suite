@@ -6,7 +6,7 @@ USE_DMENURC=0
 
 MenuProg=""
 promptOption=""
-BACKEND=${1:-fzf}
+BACKEND=${1:-dmenu}
 
 case "$BACKEND" in
     'fzf')

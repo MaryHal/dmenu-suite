@@ -27,7 +27,7 @@ Included Scripts
 Possible Usage
 ==============
 
-All scripts take a single optional argument to decide which backend to use. If this argument is excluded, fzf is used by default. Backends supported: fzf, dmenu, and rofi.
+All scripts take a single optional argument to decide which backend to use. If this argument is excluded, dmenu is used by default. Backends supported: fzf, dmenu, and rofi.
 
 Run mpcmenu (interface for mpd client) with dmenu:
 
@@ -42,6 +42,10 @@ We set an interface name for our urxvt window so we can allow a window manager t
     bspc rule -a fzf-menu floating=on,center=on,monitor=LVDS1,follow=on
 
 With this, my fzf-enabled menus will be floating and centered on my laptop monitor. It will also focus itself if I run it from any other monitor.
+
+A similar rule for i3 would be:
+
+    for_window [class="^fzf-menu$"] floating enable, move output LVDS1
 
 Xresources
 ==========
