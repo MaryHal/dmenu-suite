@@ -9,7 +9,9 @@
 # edited by Jure Ziberna for i3-py's examples section
 
 from lib import i3
+
 import subprocess
+import sys
 
 def i3clients():
     """
@@ -36,20 +38,28 @@ def i3clients():
             clients[win_str] = window['id']
     return clients
 
-def win_menu(clients, l=10):
+def win_menu(tool, clients, l=10, ):
     """
     Displays a window menu using dmenu. Returns window id.
     """
-    dmenu = subprocess.Popen(['/usr/bin/dmenu', '-s', '0', '-i','-l', str(l), '-x', '443', '-y', '200', '-w', '480'],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE)
+    if tool == "dmenu":
+        process = subprocess.Popen(['/usr/bin/dmenu', '-s', '0', '-i','-l', str(l), '-x', '443', '-y', '200', '-w', '480'],
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE)
+    elif tool == "fzf":
+        process = subprocess.Popen(['fzf'],
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE)
+
     menu_str = '\n'.join(sorted(clients.keys()))
+
     # Popen.communicate returns a tuple stdout, stderr
-    win_str = dmenu.communicate(menu_str.encode('utf-8'))[0].decode('utf-8').rstrip()
+    win_str = process.communicate(menu_str.encode('utf-8'))[0].decode('utf-8').rstrip()
     return clients.get(win_str, None)
 
 if __name__ == '__main__':
+    narrowingTool = "dmenu" if len(sys.argv) < 2 else "fzf"
     clients = i3clients()
-    win_id = win_menu(clients)
+    win_id = win_menu(narrowingTool, clients)
     if win_id:
         i3.focus(con_id=win_id)
