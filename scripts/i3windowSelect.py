@@ -40,7 +40,7 @@ def win_menu(clients, l=10):
     """
     Displays a window menu using dmenu. Returns window id.
     """
-    dmenu = subprocess.Popen(['/usr/bin/dmenu','-i','-l', str(l)],
+    dmenu = subprocess.Popen(['/usr/bin/dmenu', '-s', '0', '-i','-l', str(l), '-x', '443', '-y', '200', '-w', '480'],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE)
     menu_str = '\n'.join(sorted(clients.keys()))
