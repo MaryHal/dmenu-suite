@@ -3,7 +3,7 @@
 wallpaper_dir="$HOME/docs/wallpapers/current"
 
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-source $MENU_DIR/../lib/menu_helpers.sh
+source $MENU_DIR/lib/menu_helpers.sh
 
 feh_command="feh --bg-fill"
 

@@ -16,7 +16,7 @@ case "$BACKEND" in
     'dmenu')
         if [[ $USE_DMENURC == 1 ]]; then
             # $MENU_DIR should be set in parent script...
-            source $MENU_DIR/../lib/dmenurc
+            source $MENU_DIR/lib/dmenurc
         else
             DMENU="dmenu"
         fi
