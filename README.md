@@ -9,10 +9,10 @@ Included Scripts
 ================
 | Script             | Description
 | --------------     | -----------
-| i3windowSelect.py  | Jump-to-window/workspace in [i3](http://i3wm.org/) (dmenu only)
 | brightnessmenu     | Set laptop monitor brightness.
 | cpumenu            | Query and set system's enabled cpu profiles.
 | dvdmenu            | Navigate dvd with mpv.
+| i3windowSelect.py  | Jump-to-window/workspace in [i3](http://i3wm.org/) (dmenu only)
 | infomenu           | Display some system information with acpi.
 | killmenu           | Kill processes.
 | menumenu           | Menu to select menus.
@@ -79,3 +79,9 @@ Usage:
 
 If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile. I've accidentally held down one of my hotkeys that opens these menus causing a dozen terminals/menus to open. The addition of lockfiles will take care of mishaps like that.
 
+TODO
+====
+
+Sourcing `menu_helpers.sh` introduces redundancy into every menu script. Maybe a way to solve this is to have another wrapper script to run each menu.
+
+Merge `menu_helpers.sh` into `menuwrap.sh`. The problem I have with this though is that each menu script can no longer be run without delegation from `menuwrap.sh`.
