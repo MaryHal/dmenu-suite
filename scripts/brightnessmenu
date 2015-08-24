@@ -13,4 +13,3 @@ value=$(menu "Option: " "$brightness")
 
 # notify-send "Brightness:" "Setting brightness to $value"
 xbacklight = $value
-
