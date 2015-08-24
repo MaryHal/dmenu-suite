@@ -3,7 +3,7 @@ Menu Suite
 
 This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf).
 
-Everyone's *nix setups are different. As such, these scripts fit my personal use case; it's not guaranteed that it will fit yours.
+Everyone's *nix setups are different. As such, these scripts fit my personal use case; it's not guaranteed to fit yours.
 
 Included Scripts
 ================
@@ -33,9 +33,10 @@ Run mpcmenu (interface for mpd client) with dmenu:
 
     ~/bin/menu/scripts/mpcmenu dmenu
 
-Run mpcmenu in a new terminal emulator (urxvt) window with fzf:
+Run mpcmenu in a new terminal emulator ([urxvt](https://en.wikipedia.org/wiki/Rxvt-unicode) or [termite](https://github.com/thestinger/termite)) window with fzf:
 
-    urxvt -name "fzf-menu" -geometry 80x24 -e ~/bin/menu/scripts/mpcmenu fzf
+    urxvt -name "fzf-menu" -geometry 80x24 -e $HOME/bin/menu/scripts/mpcmenu fzf
+    termite --class "fzf-menu" --geometry 640x480 -e "$HOME/bin/menu/scripts/mpcmenu fzf"
 
 We set an interface name for our urxvt window so we can allow a window manager to specifically manage these menus. For example, [bspwm](https://github.com/baskerville/bspwm) allows us to set rules for window interfaces:
 
