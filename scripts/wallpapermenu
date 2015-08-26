@@ -16,7 +16,8 @@ choice=$(menu "File: " "$wallpaper_files $other_options")
 [[ -z "$choice" ]] && exit
 
 if [[ "$choice" == "[Random]" ]] ; then
-    $feh_command $(find "$wallpaper_dir" -maxdepth 1 -type f | shuf -n1)
+    # $feh_command $(find "$wallpaper_dir" -maxdepth 1 -type f | shuf -n1)
+    $feh_command --randomize $wallpaper_dir/*
 else
     $feh_command "$wallpaper_dir/$choice"
 fi
