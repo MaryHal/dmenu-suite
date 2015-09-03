@@ -20,8 +20,7 @@ else
     app=$($MenuProg $promptOption "Run: " < "$cache")
 fi
 
+# Return pid of the started process.
 [[ -n $app ]] && exec "$app" & disown
 
-if [[ "$BACKEND" -eq "fzf" ]]; then
-    sleep 0.1s
-fi
+# echo $$ > /tmp/runmenu.pid

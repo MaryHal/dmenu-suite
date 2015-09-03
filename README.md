@@ -48,6 +48,10 @@ A similar rule for i3 would be:
 
     for_window [class="^fzf-menu$"] floating enable, move output LVDS1
 
+#### Note:
+
+When spawning a new terminal to run the `runmenu` script (with fzf), it currently does not properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
+
 Xresources
 ==========
 
