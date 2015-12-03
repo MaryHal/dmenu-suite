@@ -20,7 +20,4 @@ else
     app=$($MenuProg $promptOption "Run: " < "$cache")
 fi
 
-# Return pid of the started process.
 [[ -n $app ]] && exec "$app" & disown
-
-# echo $$ > /tmp/runmenu.pid

@@ -42,8 +42,9 @@ def win_menu(tool, clients, l=10, ):
     """
     Displays a window menu using dmenu. Returns window id.
     """
+    # , '-x', '443', '-y', '200', '-w', '480'
     if tool == "dmenu":
-        process = subprocess.Popen(['/usr/bin/dmenu', '-s', '0', '-i','-l', str(l), '-x', '443', '-y', '200', '-w', '480'],
+        process = subprocess.Popen(['/usr/bin/dmenu', '-s', '0', '-i','-l', str(l)],
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE)
     elif tool == "fzf":

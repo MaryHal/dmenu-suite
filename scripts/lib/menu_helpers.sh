@@ -18,7 +18,8 @@ case "$BACKEND" in
             # $MENU_DIR should be set in parent script...
             source $MENU_DIR/lib/dmenurc
         else
-            DMENU="dmenu -i -l 12 -x 403 -y 200 -w 560"
+            DMENU="dmenu -i"
+            # DMENU="dmenu -i -l 12 -x 403 -y 200 -w 560"
         fi
 
         # Dmenu2 implements the '-s' option which allows us to choose which

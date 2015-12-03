@@ -134,7 +134,7 @@ class Socket(object):
     chunk_size = 1024  # in bytes
     timeout = 0.5  # in seconds
     buffer = b''  # byte string
-    
+
     def __init__(self, path=None, timeout=None, chunk_size=None,
                  magic_string=None):
         if not path:
@@ -152,14 +152,14 @@ class Socket(object):
         # Struct format initialization, length of magic string is in bytes
         self.struct_header = '<%dsII' % len(self.magic_string.encode('utf-8'))
         self.struct_header_size = struct.calcsize(self.struct_header)
-    
+
     def initialize(self):
         """
         Initializes the socket.
         """
         self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.socket.settimeout(self.timeout)
-    
+
     def connect(self, path=None):
         """
         Connects the socket to socket path if not already connected.
@@ -172,7 +172,7 @@ class Socket(object):
                 self.socket.connect(path)
             except socket.error:
                 raise ConnectionError(path)
-    
+
     def get(self, msg_type, payload=''):
         """
         Convenience method, calls "socket.send(msg_type, payload)" and
@@ -180,7 +180,7 @@ class Socket(object):
         """
         self.send(msg_type, payload)
         return self.receive()
-    
+
     def subscribe(self, event_type, event=None):
         """
         Subscribes to an event. Returns data on first occurrence.
@@ -192,7 +192,7 @@ class Socket(object):
             payload.append(event)
         payload = json.dumps(payload)
         return self.get('subscribe', payload)
-    
+
     def send(self, msg_type, payload=''):
         """
         Sends the given message type with given message by packing them
@@ -201,7 +201,7 @@ class Socket(object):
         message = self.pack(msg_type, payload)
         # Continuously send the bytes from the message
         self.socket.sendall(message)
-    
+
     def receive(self):
         """
         Tries to receive a data. Unpacks the received byte string if
@@ -218,7 +218,7 @@ class Socket(object):
             return self.unpack(data)
         except socket.timeout:
             return None
-    
+
     def pack(self, msg_type, payload):
         """
         Packs the given message type and payload. Turns the resulting
@@ -234,7 +234,7 @@ class Socket(object):
         message = '%s%s%s%s' % (msg_magic, msg_length, msg_type, payload)
         # Encoding the message back to byte string
         return message.encode('utf-8')
-    
+
     def unpack(self, data):
         """
         Unpacks the given byte string and parses the result from JSON.
@@ -252,13 +252,13 @@ class Socket(object):
         else:
             self.buffer = data
             return None
-    
+
     def unpack_header(self, data):
         """
         Unpacks the header of given byte string.
         """
         return struct.unpack(self.struct_header, data[:self.struct_header_size])
-    
+
     @property
     def connected(self):
         """
@@ -269,7 +269,7 @@ class Socket(object):
             return True
         except socket.error:
             return False
-    
+
     def close(self):
         """
         Closes the socket connection.
@@ -293,7 +293,7 @@ class Subscription(threading.Thread):
         'workspace': 'get_workspaces',
         'output': 'get_outputs'
     }
-    
+
     def __init__(self, callback, event_type, event=None, event_socket=None,
                  data_socket=None):
         # Variable initialization
@@ -314,7 +314,7 @@ class Subscription(threading.Thread):
         # Thread initialization
         threading.Thread.__init__(self)
         self.start()
-    
+
     def run(self):
         """
         Wrapper method for the listen method -- handles exceptions.
@@ -324,7 +324,7 @@ class Subscription(threading.Thread):
             self.listen()
         except socket.error:
             self.close()
-    
+
     def listen(self):
         """
         Runs a listener loop until self.subscribed is set to False.
@@ -345,7 +345,7 @@ class Subscription(threading.Thread):
                 data = None
             self.callback(event, data, self)
         self.close()
-    
+
     def close(self):
         """
         Ends subscription loop by setting self.subscribed to False and
@@ -427,7 +427,7 @@ def subscribe(event_type, event=None, callback=None):
             print('changed:', event['change'])
             if data:
                 print('data:\n', data)
-    
+
     socket = default_socket()
     subscription = Subscription(callback, event_type, event, data_socket=socket)
     try:
@@ -492,7 +492,7 @@ def parent(con_id, tree=None):
         return None
     return parents[0]
 
- 
+
 def filter(tree=None, function=None, **conditions):
     """
     Filters a tree based on given conditions. For example, to get a list of
@@ -535,7 +535,7 @@ class i3(ModuleType):
     def __init__(self, module):
         self.__module__ = module
         self.__name__ = module.__name__
-    
+
     def __getattr__(self, name):
         """
         Turns a nonexistent attribute into a function.
