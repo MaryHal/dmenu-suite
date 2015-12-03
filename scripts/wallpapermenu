@@ -5,19 +5,25 @@ wallpaper_dir="$HOME/docs/wallpapers/current"
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
-feh_command="feh --bg-fill"
+wallset_prog="setroot"
+img_options="-s"
 
-wallpaper_files=$(find $wallpaper_dir -maxdepth 1 -type f -exec basename {} \;)
+wallpaper_files=$(find "$wallpaper_dir" -maxdepth 1 -type f -exec basename {} \;)
 other_options="
 [Random]"
 
-choice=$(menu "File: " "$wallpaper_files $other_options")
+# num_monitors=$(menu "# of monitors: " "")
+num_monitors=$(xrandr -d :0 -q | grep ' connected' | wc -l)
 
-[[ -z "$choice" ]] && exit
+# choice=$(menu "File: " "$wallpaper_files $other_options")
+# [[ -z "$choice" ]] && exit
 
-if [[ "$choice" == "[Random]" ]] ; then
-    # $feh_command $(find "$wallpaper_dir" -maxdepth 1 -type f | shuf -n1)
-    $feh_command --randomize $wallpaper_dir/*
-else
-    $feh_command "$wallpaper_dir/$choice"
-fi
+files=$(echo "$wallpaper_files" | shuf -n$num_monitors)
+readarray -t wp <<< "$files"
+
+command="$wallset_prog --store "
+for i in "${wp[@]}"
+do
+    command="$command $img_options $wallpaper_dir/$i"
+done
+$command
