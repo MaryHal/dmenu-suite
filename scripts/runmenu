@@ -7,17 +7,18 @@ cachedir=${XDG_CACHE_HOME:-"$HOME/.cache"}
 if [[ -d "$cachedir" ]]; then
     cache=$cachedir/dmenu_run
 else
-   cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
+    cache=$HOME/.dmenu_cache # if no xdg dir, fall back to dotfile in ~
 fi
 
 IFS=:
 if stest -dqr -n "$cache" $PATH; then
-    candidates=$(stest -flx $PATH | sort -u | tee "$cache")
+    cache=$(stest -flx $PATH | sort -u | tee "$cache")
     IFS=$' \t\n'
-    app=$($MenuProg $promptOption "Run: " <<< "$candidates" )
 else
     IFS=$' \t\n'
-    app=$($MenuProg $promptOption "Run: " < "$cache")
+    cache=$(<$cache)
 fi
+
+app=$(menu "Run: " "$cache" )
 
 [[ -n $app ]] && exec "$app" & disown
