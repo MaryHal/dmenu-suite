@@ -10,7 +10,7 @@ BACKEND=${1:-dmenu}
 
 case "$BACKEND" in
     'fzf')
-        MenuProg="fzf -x --print-query"
+        MenuProg="fzf -x"
         promptOption="--prompt"
         ;;
     'dmenu')
@@ -53,18 +53,7 @@ function menu ()
     # Combine the rest of our arguments.
     local items=$(join $'\n' "$@")
 
-    local result=$($MenuProg $promptOption "$prompt" <<< "$items" | xargs)
-
-    if [[ "$BACKEND" == "fzf" ]]; then
-        IFS=$'\n' array=("$result")
-        if [[ ${#array[@]} -eq 1 ]]; then
-            echo "${array[0]}"
-        else
-            echo "${array[1]}"
-        fi
-    else
-        echo "$result"
-    fi
+    $MenuProg $promptOption "$prompt" <<< "$items"
 }
 
 # We can use menu() function for yes/no prompts.

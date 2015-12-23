@@ -55,7 +55,6 @@ seekOptions="0%
 ################
 
 action=$(menu "Option: " "$mainMenu")
-echo $action
 case "$action" in
     '[Select]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
