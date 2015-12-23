@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set to 1 is you want to use dmenurc instead of reading from the Xresources
-# database (patched dmenu only (like dmenu2))
+# database database (patched dmenu only (like dmenu2))
 USE_DMENURC=0
 
 MenuProg=""
@@ -10,7 +10,7 @@ BACKEND=${1:-dmenu}
 
 case "$BACKEND" in
     'fzf')
-        MenuProg="fzf -x"
+        MenuProg="fzf -x --print-query"
         promptOption="--prompt"
         ;;
     'dmenu')
@@ -53,7 +53,18 @@ function menu ()
     # Combine the rest of our arguments.
     local items=$(join $'\n' "$@")
 
-    $MenuProg $promptOption "$prompt" <<< "$items"
+    local result=$($MenuProg $promptOption "$prompt" <<< "$items" | xargs)
+
+    if [[ "$BACKEND" == "fzf" ]]; then
+        IFS=$'\n' array=("$result")
+        if [[ ${#array[@]} -lt 2 ]]; then
+            echo "${array[0]}"
+        else
+            echo "${array[1]}"
+        fi
+    else
+        echo "$result"
+    fi
 }
 
 # We can use menu() function for yes/no prompts.
