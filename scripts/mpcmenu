@@ -55,6 +55,7 @@ seekOptions="0%
 ################
 
 action=$(menu "Option: " "$mainMenu")
+echo $action
 case "$action" in
     '[Select]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
@@ -95,7 +96,9 @@ case "$action" in
         case "$action" in
             '[Add]')
                 query=$(menu "Add: " "")
-                mpc findadd $query
+                if [[ -n "$choice" ]]; then
+                    mpc findadd $query
+                fi
             ;;
             '[AddAll]')
                 mpc update -q

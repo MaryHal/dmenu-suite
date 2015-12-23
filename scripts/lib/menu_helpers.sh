@@ -57,7 +57,7 @@ function menu ()
 
     if [[ "$BACKEND" == "fzf" ]]; then
         IFS=$'\n' array=("$result")
-        if [[ ${#array[@]} -lt 2 ]]; then
+        if [[ ${#array[@]} -eq 1 ]]; then
             echo "${array[0]}"
         else
             echo "${array[1]}"
