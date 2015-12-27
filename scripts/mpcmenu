@@ -1,16 +1,25 @@
 #!/bin/bash
 
-# TODO:
-#   - More robust playlist management (even though I normally have and use only
-#     a single playlist)
-#   - Remove (more) unused features?
-#   - More abstraction, tons of repeats
-
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
+MUSIC_DIR="/home/sanford/docs/music"
+
+tempOut=$(mpc --format "")
+
+# playState=$(echo "${tempOut}" | sed -n 2p | awk '{ print $1; }')
+
+stateLine=$(echo "${tempOut}" | sed 's/volume://')
+randomState=$(awk '/repeat:/{ print $5; }' <<< "${stateLine}")
+repeatState=$(awk '/repeat:/{ print $3; }' <<< "${stateLine}")
+singleState=$(awk '/repeat:/{ print $7; }' <<< "${stateLine}")
+consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
+
 # Menu Items
-mainMenu="[Select]
+mainMenu="[AddDir]
+[AddSingle]
+[Clear]
+[Select]
 [Current]
 [Play]
 [Stop]
@@ -21,13 +30,14 @@ mainMenu="[Select]
 [Next]
 [Seek]
 [Replay]
-[Random]
-[Repeat]
-[Single]
+[Random: ${randomState}]
+[Repeat: ${repeatState}]
+[Single: ${singleState}]
+[Consume: ${consumeState}]
+[Lyrics]
 [Update]"
-# [Lyrics]
 
-playlistOptions="[Add]
+playlistOptions=" [Add]
 [AddAll]
 [Remove]
 [Clear]
@@ -46,16 +56,29 @@ seekOptions="0%
 80%
 90%"
 
-#[Random: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $5}'`]
-#[Repeat: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $3}'`]
-#[Single: `mpc | sed 's/volume://' | sed -n 3p | awk '{print $7}'`]
-
-################
-##### Main #####
-################
-
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
+    '[AddDir]')
+        pushd ${MUSIC_DIR} > /dev/null
+        musicDirList=$(find . -type d | sed -e 's!^\./!!')
+        popd > /dev/null
+        query=$(menu "Add: " "${musicDirList}")
+
+        if [[ -n "$query" ]]; then
+            mpc ls "$query" | mpc add -q
+        fi
+        ;;
+    '[AddSingle]')
+        musicList=$(mpc listall)
+        query=$(menu "Add: " "${musicList}")
+        if [[ -n "$query" ]]; then
+            mpc add "$query" -q
+        fi
+        ;;
+    '[Clear]')
+        mpc clear -q
+        notify-send "MPD:" "Playlist Cleared"
+        ;;
     '[Select]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
         selection=$(menu "Song: " "$candidates")
@@ -67,20 +90,20 @@ case "$action" in
             songNum=$(awk '{print $1}' <<< "$selection")
             mpc -q play "$songNum"
         fi
-    ;;
+        ;;
     '[Current]')
         songInfo=$(mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ')
         notify-send "MPD:" "$songInfo"
-    ;;
+        ;;
     '[Play]')
         mpc toggle -q
-    ;;
+        ;;
     '[Stop]')
         mpc stop -q
-    ;;
+        ;;
     '[Pause]')
         mpc toggle -q
-    ;;
+        ;;
     '[Load]')
         choice=$(menu "Load: " "$(mpc lsplaylists)")
         if [[ -n "$choice" ]]; then
@@ -89,20 +112,20 @@ case "$action" in
             mpc -q load "$choice"
             notify-send "MPD:" "Playlist \"$choice\" Loaded"
         fi
-    ;;
+        ;;
     '[Playlist]')
         action=$(menu "Option: " "$playlistOptions")
         case "$action" in
             '[Add]')
                 query=$(menu "Add: " "")
-                if [[ -n "$choice" ]]; then
-                    mpc findadd $query
+                if [[ -n "$query" ]]; then
+                    mpc findadd $query -q
                 fi
-            ;;
+                ;;
             '[AddAll]')
                 mpc update -q
-                mpc ls | mpc add
-            ;;
+                mpc ls | mpc add -q
+                ;;
             # '[Remove]')
             #     selection=$(mpc playlist --format '%position%  %title%' | $MenuCmd | awk '{print $1}')
             #     while [ $selection ] ; do
@@ -113,7 +136,7 @@ case "$action" in
             '[Clear]')
                 mpc clear -q
                 notify-send "MPD:" "Playlist Cleared"
-            ;;
+                ;;
             '[Load]')
                 choice=$(menu "Load: " "$(mpc lsplaylists)")
                 if [[ -n "$choice" ]]; then
@@ -122,60 +145,63 @@ case "$action" in
                     mpc -q load "$choice"
                     notify-send "MPD:" "Playlist \"$choice\" Loaded"
                 fi
-            ;;
+                ;;
             '[Save]')
                 name=$(menu "Load: " "$(mpc lsplaylists)")
                 if [[ -n "$name" ]]; then
                     mpc save "$name"
                     notify-send "MPD:" "Playlist \"$name\" Saved"
                 fi
-            ;;
+                ;;
             '[Delete]')
                 name=$(menu "Load: " "$(mpc lsplaylists)")
                 if [[ -n "$name" ]]; then
                     mpc rm "$name"
                     notify-send "MPD:" "Playlist \"$name\" Deleted"
                 fi
-            ;;
+                ;;
         esac
-    ;;
+        ;;
     '[Previous]')
         mpc prev -q
-    ;;
+        ;;
     '[Next]')
         mpc next -q
-    ;;
+        ;;
     '[Seek]')
         seek=$(menu "Seek: " "$seekOptions")
         if [[ -n "$seek" ]]; then
             mpc seek "$seek"
         fi
-    ;;
+        ;;
     '[Replay]')
         mpc stop -q
         mpc play -q
-    ;;
-    '[Random]')
+        ;;
+    '[Random'*)
         mpc random -q
-    ;;
-    '[Repeat]')
+        ;;
+    '[Repeat'*)
         mpc repeat -q
-    ;;
-    '[Single]')
+        ;;
+    '[Single'*)
         mpc single -q
-    ;;
-    # '[Lyrics]')
-    #     song=$(mpc current)
-    #     file="$HOME/.lyrics/$song.txt"
+        ;;
+    '[Consume'*)
+        mpc consume -q
+        ;;
+    '[Lyrics]')
+        song=$(mpc current)
+        file="$HOME/.lyrics/$song.txt"
 
-    #     if [[ -e "$file" ]]; then
-    #         $TERMINAL -e sh -c "less \"$file\""
-    #     else
-    #         notify-send "MPD:" "Lyrics for \"$song\" not found"
-    #     fi
-    # ;;
+        if [[ -e "$file" ]]; then
+            $TERMINAL -e sh -c "less \"$file\"" & disown
+        else
+            notify-send "MPD:" "Lyrics for \"$song\" not found"
+        fi
+        ;;
     '[Update]')
         notify-send "MPD Database" "Updating"
         mpc update -q
-    ;;
+        ;;
 esac
