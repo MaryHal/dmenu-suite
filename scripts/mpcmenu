@@ -62,7 +62,7 @@ action=$(menu "Option: " "$mainMenu")
 case "$action" in
     '[View]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
-        selection=$(menu "Song: " "$candidates")
+        selection=$(menu "" "$candidates")
         ;;
     '[AddDir]')
         pushd ${MUSIC_DIR} > /dev/null
