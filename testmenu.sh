@@ -8,3 +8,4 @@ items=$'asdf\nzxcv\nqwer'
 value=$(menu "Hello World" "$items")
 # value=$($MenuProg $promptOption "Hello World" <<< "$items")
 confirm "$value z" "b"
+

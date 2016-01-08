@@ -4,6 +4,7 @@ MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
 MUSIC_DIR="/home/sanford/docs/music"
+CACHE_FILE="/tmp/mpcmenu_cache"
 
 tempOut=$(mpc --format "")
 
@@ -69,6 +70,14 @@ case "$action" in
         fi
         ;;
     '[AddSingle]')
+        # if [[ ! -a "${CACHE_FILE}" || "${CACHE_FILE}" -ot "${MUSIC_DIR}" ]]; then
+        #     notify-send "MPD:" "Building Cache"
+        #     musicList=$(mpc listall | tee "${CACHE_FILE}")
+        # else
+        #     notify-send "MPD:" "Using Cache"
+        #     musicList=$(<${CACHE_FILE})
+        # fi
+
         musicList=$(mpc listall)
         query=$(menu "Add: " "${musicList}")
         if [[ -n "$query" ]]; then
