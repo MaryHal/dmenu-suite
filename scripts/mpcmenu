@@ -17,7 +17,8 @@ singleState=$(awk '/repeat:/{ print $7; }' <<< "${stateLine}")
 consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
 
 # Menu Items
-mainMenu="[AddDir]
+mainMenu="[View]
+[AddDir]
 [AddSingle]
 [Clear]
 [Select]
@@ -59,6 +60,10 @@ seekOptions="0%
 
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
+    '[View]')
+        candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
+        selection=$(menu "Song: " "$candidates")
+        ;;
     '[AddDir]')
         pushd ${MUSIC_DIR} > /dev/null
         musicDirList=$(find . -type d | sed -e 's!^\./!!')
@@ -92,9 +97,6 @@ case "$action" in
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
         selection=$(menu "Song: " "$candidates")
 
-        # If we selected something, play it, else, don't do anything. This fixes
-        # that one bug where it will play a paused song if you don't select
-        # anything.
         if [[ -n "$selection" ]]; then
             songNum=$(awk '{print $1}' <<< "$selection")
             mpc -q play "$songNum"
