@@ -17,17 +17,14 @@ singleState=$(awk '/repeat:/{ print $7; }' <<< "${stateLine}")
 consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
 
 # Menu Items
-mainMenu="[View]
-[AddDir]
-[AddSingle]
-[Clear]
-[Select]
+mainMenu="[Select]
 [Current]
 [Play]
 [Stop]
 [Pause]
 [Load]
 [Playlist]
+[Clear]
 [Previous]
 [Next]
 [Seek]
@@ -39,7 +36,8 @@ mainMenu="[View]
 [Lyrics]
 [Update]"
 
-playlistOptions=" [Add]
+playlistOptions="[AddDir]
+[AddSingle]
 [AddAll]
 [Remove]
 [Clear]
@@ -60,39 +58,6 @@ seekOptions="0%
 
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
-    '[View]')
-        candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
-        selection=$(menu "" "$candidates")
-        ;;
-    '[AddDir]')
-        pushd ${MUSIC_DIR} > /dev/null
-        musicDirList=$(find . -type d | sed -e 's!^\./!!')
-        popd > /dev/null
-        query=$(menu "Add: " "${musicDirList}")
-
-        if [[ -n "$query" ]]; then
-            mpc ls "$query" | mpc add -q
-        fi
-        ;;
-    '[AddSingle]')
-        # if [[ ! -a "${CACHE_FILE}" || "${CACHE_FILE}" -ot "${MUSIC_DIR}" ]]; then
-        #     notify-send "MPD:" "Building Cache"
-        #     musicList=$(mpc listall | tee "${CACHE_FILE}")
-        # else
-        #     notify-send "MPD:" "Using Cache"
-        #     musicList=$(<${CACHE_FILE})
-        # fi
-
-        musicList=$(mpc listall)
-        query=$(menu "Add: " "${musicList}")
-        if [[ -n "$query" ]]; then
-            mpc add "$query" -q
-        fi
-        ;;
-    '[Clear]')
-        mpc clear -q
-        notify-send "MPD:" "Playlist Cleared"
-        ;;
     '[Select]')
         candidates=$(mpc playlist --format '%position%  [%album% - ][%artist% - ]%title%')
         selection=$(menu "Song: " "$candidates")
@@ -127,10 +92,29 @@ case "$action" in
     '[Playlist]')
         action=$(menu "Option: " "$playlistOptions")
         case "$action" in
-            '[Add]')
-                query=$(menu "Add: " "")
+            '[AddDir]')
+                pushd ${MUSIC_DIR} > /dev/null
+                musicDirList=$(find . -type d | sed -e 's!^\./!!')
+                popd > /dev/null
+                query=$(menu "Add: " "${musicDirList}")
+
                 if [[ -n "$query" ]]; then
-                    mpc findadd $query -q
+                    mpc ls "$query" | mpc add -q
+                fi
+                ;;
+            '[AddSingle]')
+                # if [[ ! -a "${CACHE_FILE}" || "${CACHE_FILE}" -ot "${MUSIC_DIR}" ]]; then
+                #     notify-send "MPD:" "Building Cache"
+                #     musicList=$(mpc listall | tee "${CACHE_FILE}")
+                # else
+                #     notify-send "MPD:" "Using Cache"
+                #     musicList=$(<${CACHE_FILE})
+                # fi
+
+                musicList=$(mpc listall)
+                query=$(menu "Add: " "${musicList}")
+                if [[ -n "$query" ]]; then
+                    mpc add "$query" -q
                 fi
                 ;;
             '[AddAll]')
@@ -172,6 +156,10 @@ case "$action" in
                 fi
                 ;;
         esac
+        ;;
+    '[Clear]')
+        mpc clear -q
+        notify-send "MPD:" "Playlist Cleared"
         ;;
     '[Previous]')
         mpc prev -q

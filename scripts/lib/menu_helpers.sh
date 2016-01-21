@@ -3,7 +3,7 @@
 # Set to 1 is you want to use dmenurc instead of reading from the Xresources
 # database database (patched dmenu only (like dmenu2))
 USE_DMENURC=0
-USE_VERTICAL=0
+USE_VERTICAL=1
 
 MenuProg=""
 promptOption=""
@@ -26,9 +26,11 @@ case "$BACKEND" in
             fi
         fi
 
-        # Dmenu2 implements the '-s' option which allows us to choose which
-        # monitor to open our menu on.
-        MenuProg="$DMENU -s 0 "
+        # # Dmenu2 implements the '-s' option which allows us to choose which
+        # # monitor to open our menu on.
+        # MenuProg="$DMENU -s 0 "
+
+        MenuProg="$DMENU"
 
         promptOption="-p"
         ;;
