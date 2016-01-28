@@ -11,7 +11,7 @@ BACKEND=${1:-dmenu}
 
 case "$BACKEND" in
     'fzf')
-        MenuProg="fzf -x"
+        MenuProg="fzf"
         promptOption="--prompt"
         ;;
     'dmenu')
@@ -26,11 +26,11 @@ case "$BACKEND" in
             fi
         fi
 
-        # # Dmenu2 implements the '-s' option which allows us to choose which
-        # # monitor to open our menu on.
-        # MenuProg="$DMENU -s 0 "
+        # Dmenu2 implements the '-s' option which allows us to choose which
+        # monitor to open our menu on.
+        MenuProg="$DMENU -s 0 "
 
-        MenuProg="$DMENU"
+        # MenuProg="$DMENU"
 
         promptOption="-p"
         ;;

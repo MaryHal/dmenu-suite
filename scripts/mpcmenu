@@ -19,6 +19,7 @@ consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
 # Menu Items
 mainMenu="[Select]
 [Current]
+[Context]
 [Play]
 [Stop]
 [Pause]
@@ -70,6 +71,14 @@ case "$action" in
     '[Current]')
         songInfo=$(mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ')
         notify-send "MPD:" "$songInfo"
+        ;;
+    '[Context]')
+        info=$(mpc -f '%track% %album%' | sed -n 1p)
+        track=$(awk '{print $1}' <<< "$info")
+        album=$(awk '{print $2}' <<< "$info")
+
+        context=$(mpc find album "$album")
+        selection=$(menu "$track" "$context")
         ;;
     '[Play]')
         mpc toggle -q
