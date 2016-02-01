@@ -203,9 +203,17 @@ case "$action" in
         file="$HOME/.lyrics/$song.txt"
 
         if [[ -e "$file" ]]; then
-            $TERMINAL -e sh -c "less \"$file\"" & disown
+            # ${EDITOR:-gvim} "$file"
+            # $TERMINAL -e "vim '$file'" & disown
+            # xdg-open "$file"
+            emacsclient --no-wait "$file" 2> /dev/null
         else
             notify-send "MPD:" "Lyrics for \"$song\" not found"
+            createFlag=$(confirm "Create Lyrics File?")
+            if [[ -n "${createFlag}" ]]; then
+                touch "${file}"
+                notify-send "MPD:" "Created ${file}"
+            fi
         fi
         ;;
     '[Update]')
