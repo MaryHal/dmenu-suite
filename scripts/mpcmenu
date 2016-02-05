@@ -18,6 +18,8 @@ consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
 
 # Menu Items
 mainMenu="[Select]
+[AddDir]
+[AddSingle]
 [Current]
 [Context]
 [Play]
@@ -68,6 +70,33 @@ case "$action" in
             mpc -q play "$songNum"
         fi
         ;;
+
+    '[AddDir]')
+        pushd ${MUSIC_DIR} > /dev/null
+        musicDirList=$(find . -type d | sed -e 's!^\./!!')
+        popd > /dev/null
+        query=$(menu "Add: " "${musicDirList}")
+
+        if [[ -n "$query" ]]; then
+            mpc ls "$query" | mpc add -q
+        fi
+        ;;
+    '[AddSingle]')
+        # if [[ ! -a "${CACHE_FILE}" || "${CACHE_FILE}" -ot "${MUSIC_DIR}" ]]; then
+        #     notify-send "MPD:" "Building Cache"
+        #     musicList=$(mpc listall | tee "${CACHE_FILE}")
+        # else
+        #     notify-send "MPD:" "Using Cache"
+        #     musicList=$(<${CACHE_FILE})
+        # fi
+
+        musicList=$(mpc listall)
+        query=$(menu "Add: " "${musicList}")
+        if [[ -n "$query" ]]; then
+            mpc add "$query" -q
+        fi
+        ;;
+
     '[Current]')
         songInfo=$(mpc -f 'Title:  [%title%]\nArtist: [%artist%]\nAlbum:  [%album%]\n ')
         notify-send "MPD:" "$songInfo"
