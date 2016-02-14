@@ -24,6 +24,10 @@ Included Scripts
 | wallpapermenu      | Select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
 | wmmenu             | Unfinished script to interact with wmctrl.
 
+Screenshot(s)
+=============
+![Dmenu2 screenshot](screenshot01.png)
+
 Possible Usage
 ==============
 

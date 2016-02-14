@@ -3,7 +3,7 @@
 # Set to 1 is you want to use dmenurc instead of reading from the Xresources
 # database database (patched dmenu only (like dmenu2))
 USE_DMENURC=0
-USE_VERTICAL=0
+USE_VERTICAL=1
 
 MenuProg=""
 promptOption=""
