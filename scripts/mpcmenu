@@ -3,8 +3,8 @@
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
-MUSIC_DIR="/home/sanford/docs/music"
-CACHE_FILE="/tmp/mpcmenu_cache"
+MUSIC_DIR='/home/sanford/docs/music'
+CACHE_FILE='/tmp/mpcmenu_cache'
 
 tempOut=$(mpc --format "")
 
@@ -92,7 +92,7 @@ case "${action}" in
         query=$(menu "Add: " "${musicDirList}")
 
         if [[ -n "${query}" ]]; then
-            mpc ls "${query}" | mpc add -q
+            mpc ls "${query}" | mpc -q add
         fi
         ;;
     '[PushLoop]')
@@ -112,7 +112,7 @@ case "${action}" in
         while [[ -n "${selection}" ]]; do
             selection=$(menu "Song: " "${filterList}")
             if [[ -n "${selection}" ]]; then
-                mpc add "${selection}" -q
+                mpc -q add "${selection}"
             fi
         done
         ;;
@@ -129,19 +129,19 @@ case "${action}" in
         selection=$(menu "${track}" "${context}")
         ;;
     '[Play]')
-        mpc toggle -q
+        mpc -q toggle
         ;;
     '[Stop]')
-        mpc stop -q
+        mpc -q stop
         ;;
     '[Pause]')
-        mpc toggle -q
+        mpc -q toggle
         ;;
     '[Load]')
         choice=$(menu "Load: " "$(mpc lsplaylists)")
         if [[ -n "${choice}" ]]; then
-            mpc stop -q
-            mpc clear -q
+            mpc -q stop
+            mpc -q clear
             mpc -q load "${choice}"
             notify-send "MPD:" "Playlist \"${choice}\" Loaded"
         fi
@@ -150,8 +150,8 @@ case "${action}" in
         action=$(menu "Option: " "${playlistOptions}")
         case "${action}" in
             '[AddAll]')
-                mpc update -q
-                mpc ls | mpc add -q
+                mpc -q update
+                mpc ls | mpc -q add
                 ;;
             '[Remove]')
                 selection="a"
@@ -166,14 +166,14 @@ case "${action}" in
                 done
             ;;
             '[Clear]')
-                mpc clear -q
+                mpc -q clear
                 notify-send "MPD:" "Playlist Cleared"
                 ;;
             '[Load]')
                 choice=$(menu "Load: " "$(mpc lsplaylists)")
                 if [[ -n "${choice}" ]]; then
-                    mpc stop -q
-                    mpc clear -q
+                    mpc -q stop
+                    mpc -q clear
                     mpc -q load "${choice}"
                     notify-send "MPD:" "Playlist \"${choice}\" Loaded"
                 fi
@@ -195,36 +195,36 @@ case "${action}" in
         esac
         ;;
     '[Clear]')
-        mpc clear -q
+        mpc -q clear
         notify-send "MPD:" "Playlist Cleared"
         ;;
     '[Previous]')
-        mpc prev -q
+        mpc -q prev
         ;;
     '[Next]')
-        mpc next -q
+        mpc -q next
         ;;
     '[Seek]')
         seek=$(menu "Seek: " "${seekOptions}")
         if [[ -n "${seek}" ]]; then
-            mpc seek "${seek}"
+            mpc -q seek "${seek}"
         fi
         ;;
     '[Replay]')
-        mpc stop -q
-        mpc play -q
+        mpc -q stop
+        mpc -q play
         ;;
     '[Random'*)
-        mpc random -q
+        mpc -q random
         ;;
     '[Repeat'*)
-        mpc repeat -q
+        mpc -q repeat
         ;;
     '[Single'*)
-        mpc single -q
+        mpc -q single
         ;;
     '[Consume'*)
-        mpc consume -q
+        mpc -q consume
         ;;
     '[Lyrics]')
         song=$(mpc current)
@@ -246,6 +246,6 @@ case "${action}" in
         ;;
     '[Update]')
         notify-send "MPD Database" "Updating"
-        mpc update -q
+        mpc -q update
         ;;
 esac
