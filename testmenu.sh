@@ -9,3 +9,6 @@ value=$(menu "Hello World" "$items")
 # value=$($MenuProg $promptOption "Hello World" <<< "$items")
 confirm "$value z" "b"
 
+items=$'A♠\nK♥\nQ♦\nJ♣'
+selection=$(menu "Pick a card: " "$items")
+echo "$selection"
