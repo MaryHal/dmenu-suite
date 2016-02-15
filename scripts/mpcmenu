@@ -104,7 +104,11 @@ case "${action}" in
         # fi
 
         filterType=$(menu "Filter Type: " "${filterOptions}")
+        [[ -z "${filterType}" ]] && exit
+
         filterQuery=$(menu "Query (${filterType}): " "")
+        [[ -z "${filterQuery}" ]] && exit
+
         filterList=$(mpc search "${filterType}" "${filterQuery}")
 
         selection="a"
