@@ -11,7 +11,7 @@ BACKEND=${1:-dmenu}
 
 case "$BACKEND" in
     'fzf')
-        MenuProg="fzf"
+        MenuProg="fzf --print-query"
         promptOption="--prompt"
         ;;
     'dmenu')
@@ -60,7 +60,7 @@ function menu ()
     # Combine the rest of our arguments.
     local items=$(join $'\n' "$@")
 
-    $MenuProg $promptOption "$prompt" <<< "$items"
+    $MenuProg $promptOption "${prompt}" <<< "${items}" | tail -1
 }
 
 # We can use menu() function for yes/no prompts.
