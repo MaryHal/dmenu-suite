@@ -18,8 +18,8 @@ consumeState=$(awk '/repeat:/{ print $9; }' <<< "${stateLine}")
 
 # Menu Items
 mainMenu="[Select]
-[AddDir]
-[AddSingle]
+[PushDir]
+[PushLoop]
 [Current]
 [Context]
 [Play]
@@ -59,6 +59,20 @@ seekOptions="0%
 80%
 90%"
 
+filterOptions="artist
+album
+title
+track
+name
+genre
+date
+composer
+performer
+comment
+disc
+filename
+any"
+
 action=$(menu "Option: " "$mainMenu")
 case "$action" in
     '[Select]')
@@ -71,7 +85,7 @@ case "$action" in
         fi
         ;;
 
-    '[AddDir]')
+    '[PushDir]')
         pushd ${MUSIC_DIR} > /dev/null
         musicDirList=$(find . -type d | sed -e 's!^\./!!')
         popd > /dev/null
@@ -81,20 +95,26 @@ case "$action" in
             mpc ls "$query" | mpc add -q
         fi
         ;;
-    '[AddSingle]')
+    '[PushLoop]')
         # if [[ ! -a "${CACHE_FILE}" || "${CACHE_FILE}" -ot "${MUSIC_DIR}" ]]; then
         #     notify-send "MPD:" "Building Cache"
         #     musicList=$(mpc listall | tee "${CACHE_FILE}")
         # else
-        #     notify-send "MPD:" "Using Cache"
+        #     notify-send 'MPD:' 'Using Cache'
         #     musicList=$(<${CACHE_FILE})
         # fi
 
-        musicList=$(mpc listall)
-        query=$(menu "Add: " "${musicList}")
-        if [[ -n "$query" ]]; then
-            mpc add "$query" -q
-        fi
+        filterType=$(menu "Filter Type: " "${filterOptions}")
+        filterQuery=$(menu "Query (${filterType}): " "")
+        filterList=$(mpc search "${filterType}" "${filterQuery}")
+
+        selection="a"
+        while [[ -n "${selection}" ]]; do
+            selection=$(menu "Song: " "${filterList}")
+            if [[ -n "$selection" ]]; then
+                mpc add "$selection" -q
+            fi
+        done
         ;;
 
     '[Current]')
