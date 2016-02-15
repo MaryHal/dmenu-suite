@@ -27,6 +27,7 @@ Included Scripts
 Screenshot(s)
 =============
 ![Dmenu2 screenshot](screenshot01.png)
+![FZF screenshot](screenshot02.png)
 
 Possible Usage
 ==============
