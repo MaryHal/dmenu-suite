@@ -235,7 +235,7 @@ case "${action}" in
         else
             notify-send "MPD:" "Lyrics for \"${song}\" not found"
             createFlag=$(confirm "Create Lyrics File?")
-            if [[ -n "${createFlag}" ]]; then
+            if [[ "${createFlag}" == "yes" ]]; then
                 touch "${file}"
                 notify-send "MPD:" "Created ${file}"
             fi

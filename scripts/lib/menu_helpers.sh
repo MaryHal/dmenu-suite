@@ -51,7 +51,7 @@ function join
     echo "$*"
 }
 
-function menu ()
+function menu
 {
     # Grab the prompt message.
     local prompt="$1"
@@ -64,13 +64,13 @@ function menu ()
 }
 
 # We can use menu() function for yes/no prompts.
-function confirm ()
+function confirm
 {
     menu "$*" 'No' 'Yes'
 }
 
 # And we can even use it for a simple notice.
-function alert ()
+function alert
 {
     menu "$*" 'OK'
 }
