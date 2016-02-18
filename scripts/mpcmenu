@@ -225,19 +225,23 @@ case "${action}" in
         ;;
     '[Lyrics]')
         song=$(mpc current)
-        file="$HOME/.lyrics/$song.txt"
+        lyricsFile="$HOME/.lyrics/$song.txt"
 
-        if [[ -e "${file}" ]]; then
-            # ${EDITOR:-gvim} "${file}"
-            # $TERMINAL -e "vim \"${file}\"" & disown
-            # xdg-open "${file}"
-            emacsclient --no-wait "${file}" 2> /dev/null
+        if [[ -e "${lyricsFile}" ]]; then
+            # ${EDITOR:-gvim} "${lyricsFile}"
+            # $TERMINAL -e "vim \"${lyricsFile}\"" & disown
+            if [[ "${BACKEND}" == "fzf" ]]; then
+                ${EDITOR:-gvim} "${lyricsFile}"
+            else
+                xdg-open "${lyricsFile}"
+            fi
+            # emacsclient --no-wait "${lyricsFile}" 2> /dev/null
         else
             notify-send "MPD:" "Lyrics for \"${song}\" not found"
             createFlag=$(confirm "Create Lyrics File?")
-            if [[ "${createFlag}" == "yes" ]]; then
-                touch "${file}"
-                notify-send "MPD:" "Created ${file}"
+            if [[ "${createFlag,,}" == "yes" ]]; then
+                touch "${lyricsFile}"
+                notify-send "MPD:" "Created ${lyricsFile}"
             fi
         fi
         ;;

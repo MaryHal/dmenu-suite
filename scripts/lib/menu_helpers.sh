@@ -9,7 +9,7 @@ MenuProg=""
 promptOption=""
 BACKEND=${1:-dmenu}
 
-case "$BACKEND" in
+case "${BACKEND}" in
     'fzf')
         MenuProg="fzf --print-query"
         promptOption="--prompt"
