@@ -113,11 +113,13 @@ case "${action}" in
 
         filterList=$(mpc search "${filterType}" "${filterQuery}")
 
+        count=0
         selection="a"
         while [[ -n "${selection}" ]]; do
-            selection=$(menu "Song: " "${filterList}")
+            selection=$(menu "Song ($count): " "${filterList}")
             if [[ -n "${selection}" ]]; then
                 mpc -q add "${selection}"
+                ((count++))
             fi
         done
         ;;
