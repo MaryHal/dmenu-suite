@@ -109,14 +109,17 @@ case "${action}" in
         filterQuery=$(menu "Query (${filterType}): " "")
 
         # We should permit empty query strings so we can sift through all
-        # elements of a filter type. [[ -z "${filterQuery}" ]] && exit
+        # elements of a filter type.
 
-        filterList=$(mpc --format '[%album% - ][%artist% - ][%track% ]%title%' search "${filterType}" "${filterQuery}")
+        # [[ -z "${filterQuery}" ]] && exit
+
+        filterList=$(mpc search "${filterType}" "${filterQuery}")
 
         count=0
         selection="a"
         while [[ -n "${selection}" ]]; do
             selection=$(menu "Song ($count): " "${filterList}")
+            echo " ${selection}"
             if [[ -n "${selection}" ]]; then
                 mpc -q add "${selection}"
                 ((count++))
