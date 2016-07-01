@@ -21,7 +21,7 @@ Included Scripts
 | netmenu            | Wifi profile select using netctl.
 | runmenu            | List and run programs in user's $PATH.
 | shutdownmenu       | Shutdown, reboot, and sleep.
-| wallpapermenu      | Select a wallpaper from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
+| wallpapermenu      | Set a wallpaper (using setroot) from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
 | wmmenu             | Unfinished script to interact with wmctrl.
 
 Screenshot(s)

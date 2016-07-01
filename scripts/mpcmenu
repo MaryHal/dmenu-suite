@@ -3,8 +3,8 @@
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
-MUSIC_DIR='/home/sanford/docs/music'
-CACHE_FILE='/tmp/mpcmenu_cache'
+MUSIC_DIR="${HOME}/docs/music"
+CACHE_FILE="/tmp/mpcmenu_cache"
 
 tempOut=$(mpc --format "")
 

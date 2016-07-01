@@ -6,6 +6,8 @@
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
+LOCKSCREEN_WALLPAPER="$HOME/docs/wallpapers/old/SoftAndClean.png"
+
 mainMenu="[Shutdown]
 [Reboot]
 [Sleep]
@@ -48,7 +50,7 @@ case "$action" in
         sudo systemctl suspend
     ;;
     '[Lock]')
-        i3lock --show-failed-attempts --color=EEEEEE --image=/home/sanford/docs/wallpapers/old/SoftAndClean.png --tiling &
+        i3lock --show-failed-attempts --color=EEEEEE --image="$LOCKSCREEN_WALLPAPER" --tiling &
     ;;
     '[Cancel]')
         notify-send "System:" "Shutdown command cancelled"
