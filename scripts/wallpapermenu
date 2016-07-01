@@ -1,9 +1,9 @@
 #!/bin/bash
 
-wallpaper_dir="$HOME/docs/wallpapers/current"
-
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
+
+wallpaper_dir="$HOME/docs/wallpapers/current"
 
 wallset_prog="setroot"
 img_options="-s"
@@ -12,14 +12,30 @@ wallpaper_files=$(find "$wallpaper_dir" -maxdepth 1 -type f -exec basename {} \;
 other_options="
 [Random]"
 
+wp_options="$wallpaper_files $other_options"
+
 # num_monitors=$(menu "# of monitors: " "")
 num_monitors=$(xrandr -d :0 -q | grep ' connected' | wc -l)
 
 # choice=$(menu "File: " "$wallpaper_files $other_options")
 # [[ -z "$choice" ]] && exit
 
-files=$(echo "$wallpaper_files" | shuf -n$num_monitors)
-readarray -t wp <<< "$files"
+declare -a wp
+
+for ((i=1; i <= $num_monitors; i++))
+{
+    selection=$(menu "$i/$num_monitors: " "$wp_options")
+    [ -z "$selection" ] && exit
+
+    case "$selection" in
+        '[Random]')
+            wp[$i]=$(echo "$wallpaper_files" | shuf -n1)
+        ;;
+        *)
+            wp[$i]="$selection"
+        ;;
+    esac
+}
 
 command="$wallset_prog --store "
 for i in "${wp[@]}"
