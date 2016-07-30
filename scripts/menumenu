@@ -3,7 +3,21 @@
 MENU_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source $MENU_DIR/lib/menu_helpers.sh
 
-menuchoices=$(find "$MENU_DIR"  -maxdepth 1 -type f -exec basename {} \;)
-choice=$(menu "Option: " "$menuchoices")
+passthrough_args="$@"
 
-[[ -e "$HOME/bin/menu/scripts/$choice" ]] && exec $HOME/bin/menu/scripts/$choice "$1"
+menuchoices=$(find "${MENU_DIR}"  -maxdepth 1 -type f -exec basename {} \;)
+menuchoices="${menuchoices}
+[Common] Screenshot
+"
+choice=$(menu "Option: " "${menuchoices}")
+
+# [[ -e "$HOME/bin/menu/scripts/$choice" ]]
+
+case "${choice}" in
+    '[Common] Screenshot Selection')
+        maim -s
+    ;;
+    *)
+        exec "${MENU_DIR}/${choice}" "${passthrough_args}"
+    ;;
+esac

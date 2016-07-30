@@ -230,11 +230,9 @@ case "${action}" in
         ;;
     '[Lyrics]')
         song=$(mpc current)
-        lyricsFile="$HOME/.lyrics/$song.txt"
+        lyricsFile="$HOME/.lyrics/${song}.txt"
 
         if [[ -e "${lyricsFile}" ]]; then
-            # ${EDITOR:-gvim} "${lyricsFile}"
-            # $TERMINAL -e "vim \"${lyricsFile}\"" & disown
             if [[ "${BACKEND}" == "fzf" ]]; then
                 ${EDITOR:-gvim} "${lyricsFile}"
             else
