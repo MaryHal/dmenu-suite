@@ -11,11 +11,10 @@ menuchoices="${menuchoices}
 "
 choice=$(menu "Option: " "${menuchoices}")
 
-# [[ -e "$HOME/bin/menu/scripts/$choice" ]]
-
 case "${choice}" in
-    '[Common] Screenshot Selection')
+    '[Common] Screenshot')
         maim -s
+        # Automatic upload?
     ;;
     *)
         exec "${MENU_DIR}/${choice}" "${passthrough_args}"

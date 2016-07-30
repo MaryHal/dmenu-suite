@@ -9,9 +9,9 @@ brightness="100
 40
 20"
 
-value=$(menu "Option: " "$brightness")
+value=$(menu "Option: " "${brightness}")
 
-[[ -z "$value" ]] && exit
+[[ -z "${value}" ]] && exit
 
 # notify-send "Brightness:" "Setting brightness to $value"
-xbacklight = $value
+xbacklight = "${value}"
