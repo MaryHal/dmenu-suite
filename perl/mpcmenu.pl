@@ -45,6 +45,12 @@ sub listPlaylist(\@)
 {
     my $songList = shift;
 
+    if (!scalar @$songList)
+    {
+        &MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        return;
+    }
+
     my $i = 1;
     my %optionHash;
     foreach my $song (@$songList)
@@ -119,19 +125,16 @@ my %mainOptions = (
         my @uriList = map { $_->{'uri'} } $mpd->list_all();
         my $songListStr = join("\n", @uriList);
 
-        my $uri = "asdf";
-        while (length $uri)
+        while (1)
         {
-            $uri = &MenuSuite::promptMenu("Push: ", $songListStr);
+            my $uri = &MenuSuite::promptMenu("Push: ", $songListStr);
+            last if (!length $uri);
 
-            if (length $uri)
-            {
-                $mpd->add($uri);
-            }
+            $mpd->add($uri);
         }
     },
     List => sub {
-        my @playlist = $mpd->playlist_info();
+        my @playlist = grep { scalar keys %$_; } $mpd->playlist_info();
         &listPlaylist(\@playlist);
     },
     Play => \&playOrPause,
@@ -154,14 +157,16 @@ my %mainOptions = (
             return;
         }
 
-        if ($seekValue =~ /\d+%/)
+        if ($seekValue =~ /(\d+)%/)
         {
+            $seekValue = $1;
+
             my $songInfo = $mpd->current_song();
             $mpd->seek_cur($songInfo->{Time} * $seekValue / 100.0);
         }
         elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
         {
-            my $minutes = $1;
+            my $minutes = $1 || 0;
             my $seconds = $2;
 
             $mpd->seek_cur($minutes * 60.0 + $seconds);
@@ -190,7 +195,7 @@ my %mainOptions = (
                     return;
                 }
 
-                my @playlist = $mpd->list_playlist_info($name);
+                my @playlist = grep { scalar keys %$_; } $mpd->list_playlist_info($name);
                 &listPlaylist(\@playlist);
             },
             Load => sub
@@ -241,6 +246,16 @@ my %mainOptions = (
         &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
     },
     Update => sub { $mpd->update(); },
+    Stats => sub {
+        my $stats = $mpd->stats();
+        my @data;
+        foreach my $key (sort keys %$stats)
+        {
+            push(@data, "$key: $stats->{$key}");
+        }
+
+        &MenuSuite::selectMenu("Stats: ", @data);
+    },
     );
 
 &MenuSuite::runMenu("Mpd: ", \%mainOptions);

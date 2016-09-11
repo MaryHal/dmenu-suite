@@ -13,25 +13,30 @@ use IPC::Open2;
 my ($menuProg) = @ARGV;
 $menuProg //= "dmenu";
 
-sub launchMenu($\$)
+sub setMenuHandler($)
 {
     my $prompt = shift;
-    my $input  = shift || "";
 
-    my $menuCommand;
     if ($menuProg eq 'dmenu')
     {
-        $menuCommand = "dmenu -i -l 12 -x 403 -y 200 -w 560 -s 0 -p '$prompt'";
+        return "dmenu -i -l 12 -x 403 -y 200 -w 560 -s 0 -p '$prompt'";
     }
     elsif ($menuProg eq 'fzf')
     {
-        $menuCommand = "fzf $ENV{'FZF_DEFAULT_OPTS'} --print-query --prompt '$prompt'";
+        return "fzf $ENV{'FZF_DEFAULT_OPTS'} --print-query --prompt '$prompt'";
     }
     else
     {
         die "Invalid MenuProg $menuProg";
     }
+}
 
+sub launchMenu($\$)
+{
+    my $prompt = shift;
+    my $input  = shift || "";
+
+    my $menuCommand = &setMenuHandler($prompt);
     my $pid = open2(\*CHILD_OUT, \*CHILD_IN, "${menuCommand}") or die "open2() failed $!";
 
     binmode CHILD_OUT, ':utf8';
@@ -42,7 +47,8 @@ sub launchMenu($\$)
 
     waitpid($pid, 0);
 
-    my $line;
+    # Get the last line of output
+    my $line = "";
     while (<CHILD_OUT>)
     {
         chomp;
