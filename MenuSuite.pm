@@ -12,7 +12,10 @@ sub dmenu
 {
     my $input = $_[0];
 
-    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, 'dmenu -i') or die "open2() failed $!";
+    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, 'dmenu -i -l 12') or die "open2() failed $!";
+
+    binmode CHILD_OUT, ':utf8';
+    binmode CHILD_IN, ':utf8';
 
     print CHILD_IN $input;
     close CHILD_IN;
