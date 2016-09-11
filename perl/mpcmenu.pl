@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+use warnings;
 use strict;
 
 use FindBin;
@@ -136,6 +137,7 @@ my %mainOptions = (
     Seek => sub
     {
         my $seekValue = &MenuSuite::promptMenu("Seek: ");
+
         if ($seekValue =~ /\d+%/)
         {
             my $songInfo = $mpd->current_song();
