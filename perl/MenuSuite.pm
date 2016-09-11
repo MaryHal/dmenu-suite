@@ -8,7 +8,7 @@ use strict;
 use POSIX ":sys_wait_h";
 use IPC::Open2;
 
-sub dmenu
+sub dmenu(\$)
 {
     my $input = $_[0];
 
@@ -32,6 +32,18 @@ sub dmenu
     close CHILD_OUT;
 
     return $line;
+}
+
+sub runMenu(\%)
+{
+    my $dispatchTable = shift;
+
+    my @menuOptions = sort keys %$dispatchTable;
+    my $selection = &dmenu(join("\n", @menuOptions));
+
+    # TODO: Make a subroutine to select an option in a dispatch table
+    my $defaultAction = sub {};
+    ((length $selection && $dispatchTable->{$selection}) || $defaultAction)->();
 }
 
 1;

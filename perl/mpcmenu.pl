@@ -4,6 +4,9 @@ use strict;
 
 use MenuSuite;
 
+use Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
+
 use Net::MPD;
 my $mpd = Net::MPD->connect();
 
@@ -23,13 +26,35 @@ sub playOrPause
     }
 }
 
+sub dumpMpdObject
+{
+    print Dumper($mpd);
+}
+
 sub secondsToString
 {
-    my $sec = $_[0];
-    return sprintf("%02d:%02d", ($sec/60)%60, $sec%60);
+    my $seconds = $_[0];
+    return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
 }
 
 my %options = (
+    View  => sub {
+        my @songList = $mpd->playlist_info();
+
+        my $songToString = sub
+        {
+            my $song = $_;
+            return sprintf("%s %s - %s",
+                           $song->{'Track'},
+                           $song->{'Title'},
+                           $song->{'Album'});
+        };
+
+        my @formattedList = map(&$songToString, @songList);
+
+        &MenuSuite::dmenu(join("\n", @formattedList));
+    },
+    Debug => \&dumpMpdObject,
     Play  => \&playOrPause,
     Stop  => sub { $mpd->stop(); },
     State => sub {
@@ -39,6 +64,7 @@ my %options = (
             $songInfo{'Artist'},
             $songInfo{'Album'},
             $songInfo{'Track'},
+            secondsToString($mpd->elapsed),
             secondsToString($songInfo{'Time'})
             );
 
@@ -46,9 +72,4 @@ my %options = (
     }
     );
 
-my $selection = &MenuSuite::dmenu(join("\n", sort keys %options));
-
-if (length $selection)
-{
-    $options{$selection}->();
-}
+&MenuSuite::runMenu(\%options);
