@@ -34,6 +34,12 @@ sub dmenu(\$)
     return $line;
 }
 
+sub selectMenu(\@)
+{
+    my $options = shift;
+    return &dmenu(join("\n", @$options));
+}
+
 sub runMenu(\%)
 {
     my $dispatchTable = shift;

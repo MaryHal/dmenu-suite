@@ -39,22 +39,62 @@ sub secondsToString($)
     return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
 }
 
-my %options = (
+sub detailedSongInfo(\%)
+{
+    my $songInfo = shift;
+    my @data = (
+        $songInfo->{'Title'},
+        $songInfo->{'Artist'},
+        $songInfo->{'Album'},
+        $songInfo->{'Track'},
+        secondsToString($mpd->elapsed),
+        secondsToString($songInfo->{'Time'})
+        );
+
+    return @data;
+}
+
+sub showDetailedSongInfo()
+{
+    my @data = detailedSongInfo(%{$mpd->current_song()});
+    &MenuSuite::selectMenu(\@data);
+}
+
+my %mainOptions = (
+    Push   => sub {
+        # my @songList = $mpd->search("any", "");
+        # print Dumper(@songList);
+        print Dumper($mpd->list_all_info());
+    },
     List   => sub {
         my @songList = $mpd->playlist_info();
 
         my $songToString = sub(\%)
         {
             my $song = $_;
-            return sprintf("%s %s - %s",
-                           $song->{'Track'},
-                           $song->{'Title'},
-                           $song->{'Album'});
+
+            if (scalar keys %$song)
+            {
+                return sprintf("%s %s - %s",
+                               $song->{'Track'},
+                               $song->{'Title'},
+                               $song->{'Album'});
+            }
+            else
+            {
+                return;
+            }
         };
 
         my @formattedList = map(&$songToString, @songList);
 
-        &MenuSuite::dmenu(join("\n", @formattedList));
+        my %optionHash;
+        foreach my $song (@formattedList)
+        {
+            $optionHash{$song} = \&showDetailedSongInfo;
+        }
+
+        &MenuSuite::runMenu(\%optionHash);
     },
     Play   => \&playOrPause,
     Next   => sub { $mpd->next(); },
@@ -62,25 +102,17 @@ my %options = (
     Replay => sub { $mpd->stop(); $mpd->play(); },
     Pause  => sub { $mpd->pause(); },
     Stop   => sub { $mpd->stop(); },
-    State  => sub {
-        my %songInfo = %{$mpd->current_song()};
-        my @data = (
-            $songInfo{'Title'},
-            $songInfo{'Artist'},
-            $songInfo{'Album'},
-            $songInfo{'Track'},
-            secondsToString($mpd->elapsed),
-            secondsToString($songInfo{'Time'})
-            );
-
-        &MenuSuite::dmenu(join("\n", @data));
-    },
+    State  => \&showDetailedSongInfo,
     Toggle => sub
     {
-        my $randomState  = $mpd->random;
-        my $repeatState  = $mpd->repeat;
-        my $consumeState = $mpd->consume;
-        my $singleState  = $mpd->single;
+        my $boolToString = sub($)
+        {
+            return shift ? 'true' : 'false';
+        };
+        my $randomState  = &$boolToString($mpd->random);
+        my $repeatState  = &$boolToString($mpd->repeat);
+        my $consumeState = &$boolToString($mpd->consume);
+        my $singleState  = &$boolToString($mpd->single);
 
         # Proof of concept
         my %toggleOptions = (
@@ -92,7 +124,8 @@ my %options = (
 
         &MenuSuite::runMenu(\%toggleOptions);
     },
+    Update => sub { $mpd->update(); },
     # Debug => \&dumpMpdObject,
     );
 
-&MenuSuite::runMenu(\%options);
+&MenuSuite::runMenu(\%mainOptions);
