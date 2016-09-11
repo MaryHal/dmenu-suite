@@ -128,11 +128,27 @@ my %mainOptions = (
     Play => \&playOrPause,
     Next => sub { $mpd->next(); },
     Prev => sub { $mpd->previous(); },
-    Replay => sub { $mpd->stop(); $mpd->play(); },
+    # Replay => sub { $mpd->stop(); $mpd->play(); },
     Pause => sub { $mpd->pause(); },
     Stop => sub { $mpd->stop(); },
     Current => \&showDetailedSongInfo,
     Clear => sub { $mpd->clear(); },
+    Seek => sub
+    {
+        my $seekValue = &MenuSuite::promptMenu("Seek: ");
+        if ($seekValue =~ /\d+%/)
+        {
+            my $songInfo = $mpd->current_song();
+            $mpd->seek_cur($songInfo->{Time} * $seekValue / 100.0);
+        }
+        elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
+        {
+            my $minutes = $1;
+            my $seconds = $2;
+
+            $mpd->seek_cur($minutes * 60.0 + $seconds);
+        }
+    },
     Playlist => sub
     {
         my %playlistMenuOptions = (
