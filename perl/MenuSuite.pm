@@ -11,7 +11,7 @@ use IPC::Open2;
 sub dmenu($\$)
 {
     my $prompt = shift;
-    my $input  = shift;
+    my $input  = shift || "";
 
     my $pid = open2(\*CHILD_OUT, \*CHILD_IN, "dmenu -i -l 12 -x 403 -y 200 -w 560 -s 0 -p $prompt") or die "open2() failed $!";
 
@@ -33,6 +33,12 @@ sub dmenu($\$)
     close CHILD_OUT;
 
     return $line;
+}
+
+sub promptMenu($)
+{
+    my $prompt = shift;
+    return &MenuSuite::dmenu($prompt);
 }
 
 sub selectMenu($\@)

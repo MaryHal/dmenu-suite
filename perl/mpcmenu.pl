@@ -92,7 +92,7 @@ sub showDetailedSongInfo()
 my %mainOptions = (
     Push => sub {
         # my @songList = $mpd->search("any", "");
-        # print Dumper(@songList);
+
         my @urlList = map { $_->{'uri'} } $mpd->list_all_info();
 
         my $uri = "asdf";
@@ -133,6 +133,50 @@ my %mainOptions = (
     Stop => sub { $mpd->stop(); },
     Current => \&showDetailedSongInfo,
     Clear => sub { $mpd->clear(); },
+    Playlist => sub
+    {
+        my %playlistMenuOptions = (
+            Save => sub
+            {
+                my $name = &MenuSuite::promptMenu("Save: ");
+
+                chomp($name);
+                if (length $name)
+                {
+                    $mpd->save($name);
+                }
+            },
+            List => sub
+            {
+                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                &MenuSuite::selectMenu("List: ", \@playlistList);
+            },
+            Load => sub
+            {
+                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                my $name = &MenuSuite::selectMenu("Load: ", \@playlistList);
+
+                chomp($name);
+                if (length $name)
+                {
+                    $mpd->load($name);
+                }
+            },
+            Delete => sub
+            {
+                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                my $name = &MenuSuite::selectMenu("Delete: ", \@playlistList);
+
+                chomp($name);
+                if (length $name)
+                {
+                    $mpd->rm($name);
+                }
+            },
+            Clear => sub { $mpd->clear(); },
+            );
+        &MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
+    },
     Toggle => sub
     {
         my $boolToString = sub($)
