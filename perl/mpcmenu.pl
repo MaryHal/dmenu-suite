@@ -33,17 +33,17 @@ sub dumpMpdObject
     print Dumper($mpd);
 }
 
-sub secondsToString
+sub secondsToString($)
 {
-    my $seconds = $_[0];
+    my $seconds = shift;
     return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
 }
 
 my %options = (
-    View  => sub {
+    List   => sub {
         my @songList = $mpd->playlist_info();
 
-        my $songToString = sub
+        my $songToString = sub(\%)
         {
             my $song = $_;
             return sprintf("%s %s - %s",
@@ -56,10 +56,13 @@ my %options = (
 
         &MenuSuite::dmenu(join("\n", @formattedList));
     },
-    Debug => \&dumpMpdObject,
-    Play  => \&playOrPause,
-    Stop  => sub { $mpd->stop(); },
-    State => sub {
+    Play   => \&playOrPause,
+    Next   => sub { $mpd->next(); },
+    Prev   => sub { $mpd->previous(); },
+    Replay => sub { $mpd->stop(); $mpd->play(); },
+    Pause  => sub { $mpd->pause(); },
+    Stop   => sub { $mpd->stop(); },
+    State  => sub {
         my %songInfo = %{$mpd->current_song()};
         my @data = (
             $songInfo{'Title'},
@@ -71,7 +74,25 @@ my %options = (
             );
 
         &MenuSuite::dmenu(join("\n", @data));
-    }
+    },
+    Toggle => sub
+    {
+        my $randomState  = $mpd->random;
+        my $repeatState  = $mpd->repeat;
+        my $consumeState = $mpd->consume;
+        my $singleState  = $mpd->single;
+
+        # Proof of concept
+        my %toggleOptions = (
+            "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); },
+            "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); },
+            "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); },
+            "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); },
+            );
+
+        &MenuSuite::runMenu(\%toggleOptions);
+    },
+    # Debug => \&dumpMpdObject,
     );
 
 &MenuSuite::runMenu(\%options);
