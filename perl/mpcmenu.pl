@@ -5,6 +5,7 @@ use strict;
 
 use FindBin;
 use lib "$FindBin::Bin/";
+
 use MenuSuite;
 
 use Data::Dumper;
@@ -29,15 +30,31 @@ sub playOrPause
     }
 }
 
-sub dumpMpdObject
-{
-    print Dumper($mpd);
-}
-
 sub secondsToString($)
 {
     my $seconds = shift;
     return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
+}
+
+sub listPlaylist(\@)
+{
+    my $songList = shift;
+
+    my $i = 1;
+    my %optionHash;
+    foreach my $song (@$songList)
+    {
+        my $key = sprintf "%3i  %s", $i,  &briefSongInfo($song);
+        $optionHash{$key} = sub
+        {
+            my @data = detailedSongInfo($song);
+            &MenuSuite::selectMenu("Info: ", \@data);
+        };
+
+        $i++;
+    }
+
+    &MenuSuite::runMenu("List: ", \%optionHash);
 }
 
 sub briefSongInfo(\%)
@@ -72,7 +89,7 @@ sub showDetailedSongInfo()
 {
     if (!$mpd->playlist_length)
     {
-        &MenuSuite::dmenu("Info: ", "Playlist is Empty");
+        &MenuSuite::promptMenu("Info: ", "Playlist is Empty");
         return;
     }
 
@@ -94,12 +111,13 @@ my %mainOptions = (
     Push => sub {
         # my @songList = $mpd->search("any", "");
 
-        my @urlList = map { $_->{'uri'} } $mpd->list_all_info();
+        my @uriList = map { $_->{'uri'} } $mpd->list_all();
+        my $songListStr = join("\n", @uriList);
 
         my $uri = "asdf";
         while (length $uri)
         {
-            $uri = MenuSuite::selectMenu("Push: ", @urlList);
+            $uri = &MenuSuite::promptMenu("Push: ", $songListStr);
 
             if (length $uri)
             {
@@ -108,35 +126,28 @@ my %mainOptions = (
         }
     },
     List => sub {
-        my @songList = $mpd->playlist_info();
-
-        my $i = 1;
-        my %optionHash;
-        foreach my $song (@songList)
-        {
-            my $key = "$i  " . &briefSongInfo($song);
-            $optionHash{$key} = sub
-            {
-                my @data = detailedSongInfo(%$song);
-                &MenuSuite::selectMenu("Info: ", \@data);
-            };
-
-            $i++;
-        }
-
-        &MenuSuite::runMenu("List: ", \%optionHash);
+        my @playlist = $mpd->playlist_info();
+        &listPlaylist(\@playlist);
     },
     Play => \&playOrPause,
     Next => sub { $mpd->next(); },
     Prev => sub { $mpd->previous(); },
-    # Replay => sub { $mpd->stop(); $mpd->play(); },
     Pause => sub { $mpd->pause(); },
     Stop => sub { $mpd->stop(); },
     Current => \&showDetailedSongInfo,
-    Clear => sub { $mpd->clear(); },
     Seek => sub
     {
+        if ($mpd->state eq 'stop')
+        {
+            return;
+        }
+
         my $seekValue = &MenuSuite::promptMenu("Seek: ");
+
+        if (!length $seekValue)
+        {
+            return;
+        }
 
         if ($seekValue =~ /\d+%/)
         {
@@ -167,7 +178,10 @@ my %mainOptions = (
             List => sub
             {
                 my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
-                &MenuSuite::selectMenu("List: ", \@playlistList);
+                my $name = &MenuSuite::selectMenu("List: ", \@playlistList);
+
+                my @playlist = $mpd->list_playlist_info($name);
+                &listPlaylist(\@playlist);
             },
             Load => sub
             {
@@ -220,4 +234,4 @@ my %mainOptions = (
     # Debug => \&dumpMpdObject,
     );
 
-&MenuSuite::runMenu("Mpd:", \%mainOptions);
+&MenuSuite::runMenu("Mpd: ", \%mainOptions);

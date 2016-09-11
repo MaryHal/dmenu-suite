@@ -57,10 +57,11 @@ sub launchMenu($\$)
     return $line;
 }
 
-sub promptMenu($)
+sub promptMenu($\$)
 {
     my $prompt = shift;
-    return &MenuSuite::launchMenu($prompt);
+    my $info   = shift || "";
+    return &MenuSuite::launchMenu($prompt, $info);
 }
 
 sub selectMenu($\@)
@@ -77,8 +78,6 @@ sub runMenu($\%)
 
     my @menuOptions = sort keys %$dispatchTable;
     my $selection = &launchMenu($prompt, join("\n", @menuOptions));
-
-    print Dumper($selection);
 
     # TODO: Make a subroutine to select an option in a dispatch table
     my $defaultAction = sub {};
