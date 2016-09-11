@@ -39,6 +39,19 @@ sub secondsToString($)
     return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
 }
 
+sub briefSongInfo(\%)
+{
+    my $song = shift;
+
+    if (scalar keys %$song)
+    {
+        return sprintf("%s - %s - %s",
+                       $song->{'Title'},
+                       $song->{'Artist'},
+                       $song->{'Album'});
+    }
+}
+
 sub detailedSongInfo(\%)
 {
     my $songInfo = shift;
@@ -56,53 +69,70 @@ sub detailedSongInfo(\%)
 
 sub showDetailedSongInfo()
 {
-    my @data = detailedSongInfo(%{$mpd->current_song()});
-    &MenuSuite::selectMenu(\@data);
+    if (!$mpd->playlist_length)
+    {
+        &MenuSuite::dmenu("Info: ", "Playlist is Empty");
+        return;
+    }
+
+    my $songInfo;
+    if ($mpd->state ne 'stop')
+    {
+        $songInfo = \%{$mpd->current_song()};
+    }
+    else
+    {
+        $songInfo = \%{$mpd->playlist_info(0)};
+    }
+
+    my @data = detailedSongInfo(%$songInfo);
+    &MenuSuite::selectMenu("Info: ", \@data);
 }
 
 my %mainOptions = (
-    Push   => sub {
+    Push => sub {
         # my @songList = $mpd->search("any", "");
         # print Dumper(@songList);
-        print Dumper($mpd->list_all_info());
+        my @urlList = map { $_->{'uri'} } $mpd->list_all_info();
+
+        my $uri = "asdf";
+        while (length $uri)
+        {
+            $uri = MenuSuite::selectMenu("Push: ", @urlList);
+
+            if (length $uri)
+            {
+                $mpd->add($uri);
+            }
+        }
     },
-    List   => sub {
+    List => sub {
         my @songList = $mpd->playlist_info();
 
-        my $songToString = sub(\%)
-        {
-            my $song = $_;
-
-            if (scalar keys %$song)
-            {
-                return sprintf("%s %s - %s",
-                               $song->{'Track'},
-                               $song->{'Title'},
-                               $song->{'Album'});
-            }
-            else
-            {
-                return;
-            }
-        };
-
-        my @formattedList = map(&$songToString, @songList);
-
+        my $i = 1;
         my %optionHash;
-        foreach my $song (@formattedList)
+        foreach my $song (@songList)
         {
-            $optionHash{$song} = \&showDetailedSongInfo;
+            my $key = "$i  " . &briefSongInfo($song);
+            $optionHash{$key} = sub
+            {
+                my @data = detailedSongInfo(%$song);
+                &MenuSuite::selectMenu("Info: ", \@data);
+            };
+
+            $i++;
         }
 
-        &MenuSuite::runMenu(\%optionHash);
+        &MenuSuite::runMenu("List: ", \%optionHash);
     },
-    Play   => \&playOrPause,
-    Next   => sub { $mpd->next(); },
-    Prev   => sub { $mpd->previous(); },
+    Play => \&playOrPause,
+    Next => sub { $mpd->next(); },
+    Prev => sub { $mpd->previous(); },
     Replay => sub { $mpd->stop(); $mpd->play(); },
-    Pause  => sub { $mpd->pause(); },
-    Stop   => sub { $mpd->stop(); },
-    State  => \&showDetailedSongInfo,
+    Pause => sub { $mpd->pause(); },
+    Stop => sub { $mpd->stop(); },
+    Current => \&showDetailedSongInfo,
+    Clear => sub { $mpd->clear(); },
     Toggle => sub
     {
         my $boolToString = sub($)
@@ -122,10 +152,10 @@ my %mainOptions = (
             "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); },
             );
 
-        &MenuSuite::runMenu(\%toggleOptions);
+        &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
     },
     Update => sub { $mpd->update(); },
     # Debug => \&dumpMpdObject,
     );
 
-&MenuSuite::runMenu(\%mainOptions);
+&MenuSuite::runMenu("Mpd:", \%mainOptions);
