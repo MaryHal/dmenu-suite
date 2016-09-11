@@ -2,6 +2,8 @@
 
 use strict;
 
+use FindBin;
+use lib "$FindBin::Bin/";
 use MenuSuite;
 
 use Data::Dumper;
