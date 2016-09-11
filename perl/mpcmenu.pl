@@ -14,6 +14,11 @@ $Data::Dumper::Sortkeys = 1;
 use Net::MPD;
 my $mpd = Net::MPD->connect();
 
+sub isPlaying
+{
+    return $mpd->state eq 'stop';
+}
+
 sub playOrPause
 {
     if ($mpd->state eq 'stop')
@@ -180,6 +185,11 @@ my %mainOptions = (
                 my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
                 my $name = &MenuSuite::selectMenu("List: ", \@playlistList);
 
+                if (!length $name)
+                {
+                    return;
+                }
+
                 my @playlist = $mpd->list_playlist_info($name);
                 &listPlaylist(\@playlist);
             },
@@ -231,7 +241,6 @@ my %mainOptions = (
         &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
     },
     Update => sub { $mpd->update(); },
-    # Debug => \&dumpMpdObject,
     );
 
 &MenuSuite::runMenu("Mpd: ", \%mainOptions);

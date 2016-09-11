@@ -54,6 +54,11 @@ sub launchMenu($\$)
 
     close CHILD_OUT;
 
+    if ($line eq '~kill')
+    {
+        die "Kill switch activated";
+    }
+
     return $line;
 }
 
