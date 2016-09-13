@@ -118,6 +118,28 @@ sub showDetailedSongInfo()
     &MenuSuite::selectMenu("Info: ", \@data);
 }
 
+sub showToggleMenu()
+{
+    my $boolToString = sub($)
+    {
+        return shift ? 'true' : 'false';
+    };
+    my $randomState  = &$boolToString($mpd->random);
+    my $repeatState  = &$boolToString($mpd->repeat);
+    my $consumeState = &$boolToString($mpd->consume);
+    my $singleState  = &$boolToString($mpd->single);
+
+    # Proof of concept
+    my %toggleOptions = (
+        "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); &showToggleMenu(); },
+        "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); &showToggleMenu(); },
+        "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); &showToggleMenu(); },
+        "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); &showToggleMenu(); },
+        );
+
+    &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
+}
+
 my %mainOptions = (
     Push => sub {
         # my @songList = $mpd->search("any", "");
@@ -224,27 +246,7 @@ my %mainOptions = (
             );
         &MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
     },
-    Toggle => sub
-    {
-        my $boolToString = sub($)
-        {
-            return shift ? 'true' : 'false';
-        };
-        my $randomState  = &$boolToString($mpd->random);
-        my $repeatState  = &$boolToString($mpd->repeat);
-        my $consumeState = &$boolToString($mpd->consume);
-        my $singleState  = &$boolToString($mpd->single);
-
-        # Proof of concept
-        my %toggleOptions = (
-            "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); },
-            "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); },
-            "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); },
-            "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); },
-            );
-
-        &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
-    },
+    Toggle => \&showToggleMenu,
     Update => sub { $mpd->update(); },
     Stats => sub {
         my $stats = $mpd->stats();
@@ -254,7 +256,7 @@ my %mainOptions = (
             push(@data, "$key: $stats->{$key}");
         }
 
-        &MenuSuite::selectMenu("Stats: ", @data);
+        &MenuSuite::selectMenu("Stats: ", \@data);
     },
     );
 

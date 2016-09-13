@@ -37,7 +37,7 @@ sub launchMenu($\$)
     my $input  = shift || "";
 
     my $menuCommand = &setMenuHandler($prompt);
-    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, "${menuCommand}") or die "open2() failed $!";
+    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, ${menuCommand}) or die "open2() failed $!";
 
     binmode CHILD_OUT, ':utf8';
     binmode CHILD_IN, ':utf8';
