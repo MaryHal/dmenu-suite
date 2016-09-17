@@ -125,8 +125,6 @@ sub showDetailedSongInfo
         $songInfo = \%{mpc()->playlist_info(0)};
     }
 
-    print Dumper($songInfo);
-
     my @data = detailedSongInfo($songInfo);
     MenuSuite::selectMenu("Info: ", \@data);
 }
