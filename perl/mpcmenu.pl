@@ -252,23 +252,13 @@ my %mainOptions = (
         my %playlistMenuOptions = (
             Save => sub
             {
-                my $name = MenuSuite::promptMenu("Save: ");
-
-                chomp($name);
-                if (length $name)
-                {
-                    mpc()->save($name);
-                }
+                my $name = MenuSuite::promptMenu("Save: ") || exit 0;
+                mpc()->save($name);
             },
             List => sub
             {
                 my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
-                my $name = MenuSuite::selectMenu("List: ", \@playlistList);
-
-                if (!length $name)
-                {
-                    return;
-                }
+                my $name = MenuSuite::selectMenu("List: ", \@playlistList) || exit 0;
 
                 my @playlist = grep { scalar keys %$_; } mpc()->list_playlist_info($name);
                 listPlaylist(\@playlist);
@@ -276,24 +266,24 @@ my %mainOptions = (
             Load => sub
             {
                 my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
-                my $name = MenuSuite::selectMenu("Load: ", \@playlistList);
+                my $name = MenuSuite::selectMenu("Load: ", \@playlistList) || exit 0;
 
-                chomp($name);
-                if (length $name)
-                {
-                    mpc()->load($name);
-                }
+                mpc()->load($name);
+            },
+            Rename => sub
+            {
+                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
+                my $oldname = MenuSuite::selectMenu("Old Name: ", \@playlistList) || exit 0;
+                my $newname = MenuSuite::promptMenu("New Name: ") || exit 0;
+
+                mpc()->rename($oldname, $newname);
             },
             Delete => sub
             {
                 my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
-                my $name = MenuSuite::selectMenu("Delete: ", \@playlistList);
+                my $name = MenuSuite::selectMenu("Delete: ", \@playlistList) || exit 0;
 
-                chomp($name);
-                if (length $name)
-                {
-                    mpc()->rm($name);
-                }
+                mpc()->rm($name);
             },
             Clear => sub { mpc()->clear(); },
             );
