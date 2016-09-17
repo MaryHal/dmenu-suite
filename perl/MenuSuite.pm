@@ -13,9 +13,9 @@ use IPC::Open2;
 my ($menuProg) = @ARGV;
 $menuProg //= "dmenu";
 
-sub setMenuHandler($)
+sub setMenuHandler
 {
-    my $prompt = shift;
+    my ($prompt) = @_;
 
     if ($menuProg eq 'dmenu')
     {
@@ -31,12 +31,11 @@ sub setMenuHandler($)
     }
 }
 
-sub launchMenu($\$)
+sub launchMenu
 {
-    my $prompt = shift;
-    my $input  = shift || "";
+    my ($prompt, $input) = @_;
 
-    my $menuCommand = &setMenuHandler($prompt);
+    my $menuCommand = setMenuHandler($prompt);
     my $pid = open2(\*CHILD_OUT, \*CHILD_IN, ${menuCommand}) or die "open2() failed $!";
 
     binmode CHILD_OUT, ':utf8';
@@ -68,29 +67,25 @@ sub launchMenu($\$)
     return $line;
 }
 
-sub promptMenu($\$)
+sub promptMenu
 {
-    my $prompt = shift;
-    my $info   = shift || "";
-    return &MenuSuite::launchMenu($prompt, $info);
+    my ($prompt, $info) = @_;
+    return MenuSuite::launchMenu($prompt, $info);
 }
 
-sub selectMenu($\@)
+sub selectMenu
 {
-    my $prompt  = shift;
-    my $options = shift;
-    return &launchMenu($prompt, join("\n", @$options));
+    my ($prompt, $options) = @_;
+    return launchMenu($prompt, join("\n", @$options));
 }
 
-sub runMenu($\%)
+sub runMenu
 {
-    my $prompt  = shift;
-    my $dispatchTable = shift;
+    my ($prompt, $dispatchTable) = @_;
 
     my @menuOptions = sort keys %$dispatchTable;
-    my $selection = &launchMenu($prompt, join("\n", @menuOptions));
+    my $selection = launchMenu($prompt, join("\n", @menuOptions));
 
-    # TODO: Make a subroutine to select an option in a dispatch table
     my $defaultAction = sub {};
     ((length $selection && $dispatchTable->{$selection}) || $defaultAction)->();
 

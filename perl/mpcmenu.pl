@@ -35,19 +35,19 @@ sub playOrPause
     }
 }
 
-sub secondsToString($)
+sub secondsToString
 {
-    my $seconds = shift;
+    my ($seconds) = @_;
     return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
 }
 
-sub listPlaylist(\@)
+sub listPlaylist
 {
-    my $songList = shift;
+    my ($songList) = @_;
 
     if (!scalar @$songList)
     {
-        &MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
         return;
     }
 
@@ -55,22 +55,22 @@ sub listPlaylist(\@)
     my %optionHash;
     foreach my $song (@$songList)
     {
-        my $key = sprintf "%3i  %s", $i,  &briefSongInfo($song);
+        my $key = sprintf "%3i  %s", $i,  briefSongInfo($song);
         $optionHash{$key} = sub
         {
             my @data = detailedSongInfo($song);
-            &MenuSuite::selectMenu("Info: ", \@data);
+            MenuSuite::selectMenu("Info: ", \@data);
         };
 
         $i++;
     }
 
-    &MenuSuite::runMenu("List: ", \%optionHash);
+    MenuSuite::runMenu("List: ", \%optionHash);
 }
 
-sub briefSongInfo(\%)
+sub briefSongInfo
 {
-    my $song = shift;
+    my ($song) = @_;
 
     if (scalar keys %$song)
     {
@@ -81,9 +81,10 @@ sub briefSongInfo(\%)
     }
 }
 
-sub detailedSongInfo(\%)
+sub detailedSongInfo
 {
-    my $songInfo = shift;
+    my ($songInfo) = @_;
+
     my @data = (
         $songInfo->{'Title'},
         $songInfo->{'Artist'},
@@ -96,11 +97,11 @@ sub detailedSongInfo(\%)
     return @data;
 }
 
-sub showDetailedSongInfo()
+sub showDetailedSongInfo
 {
     if (!$mpd->playlist_length)
     {
-        &MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
         return;
     }
 
@@ -114,30 +115,32 @@ sub showDetailedSongInfo()
         $songInfo = \%{$mpd->playlist_info(0)};
     }
 
-    my @data = detailedSongInfo(%$songInfo);
-    &MenuSuite::selectMenu("Info: ", \@data);
+    print Dumper($songInfo);
+
+    my @data = detailedSongInfo($songInfo);
+    MenuSuite::selectMenu("Info: ", \@data);
 }
 
-sub showToggleMenu()
+sub showToggleMenu
 {
-    my $boolToString = sub($)
+    my $boolToString = sub
     {
         return shift ? 'true' : 'false';
     };
-    my $randomState  = &$boolToString($mpd->random);
-    my $repeatState  = &$boolToString($mpd->repeat);
-    my $consumeState = &$boolToString($mpd->consume);
-    my $singleState  = &$boolToString($mpd->single);
+    my $randomState  = $boolToString->($mpd->random);
+    my $repeatState  = $boolToString->($mpd->repeat);
+    my $consumeState = $boolToString->($mpd->consume);
+    my $singleState  = $boolToString->($mpd->single);
 
     # Proof of concept
     my %toggleOptions = (
-        "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); &showToggleMenu(); },
-        "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); &showToggleMenu(); },
-        "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); &showToggleMenu(); },
-        "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); &showToggleMenu(); },
+        "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); showToggleMenu(); },
+        "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); showToggleMenu(); },
+        "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); showToggleMenu(); },
+        "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); showToggleMenu(); },
         );
 
-    &MenuSuite::runMenu("Toggle: ", \%toggleOptions);
+    MenuSuite::runMenu("Toggle: ", \%toggleOptions);
 }
 
 my %mainOptions = (
@@ -149,7 +152,7 @@ my %mainOptions = (
 
         while (1)
         {
-            my $uri = &MenuSuite::promptMenu("Push: ", $songListStr);
+            my $uri = MenuSuite::promptMenu("Push: ", $songListStr);
             last if (!length $uri);
 
             $mpd->add($uri);
@@ -157,7 +160,7 @@ my %mainOptions = (
     },
     List => sub {
         my @playlist = grep { scalar keys %$_; } $mpd->playlist_info();
-        &listPlaylist(\@playlist);
+        listPlaylist(\@playlist);
     },
     Play => \&playOrPause,
     Next => sub { $mpd->next(); },
@@ -172,7 +175,7 @@ my %mainOptions = (
             return;
         }
 
-        my $seekValue = &MenuSuite::promptMenu("Seek: ");
+        my $seekValue = MenuSuite::promptMenu("Seek: ");
 
         if (!length $seekValue)
         {
@@ -199,7 +202,7 @@ my %mainOptions = (
         my %playlistMenuOptions = (
             Save => sub
             {
-                my $name = &MenuSuite::promptMenu("Save: ");
+                my $name = MenuSuite::promptMenu("Save: ");
 
                 chomp($name);
                 if (length $name)
@@ -210,7 +213,7 @@ my %mainOptions = (
             List => sub
             {
                 my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
-                my $name = &MenuSuite::selectMenu("List: ", \@playlistList);
+                my $name = MenuSuite::selectMenu("List: ", \@playlistList);
 
                 if (!length $name)
                 {
@@ -218,12 +221,12 @@ my %mainOptions = (
                 }
 
                 my @playlist = grep { scalar keys %$_; } $mpd->list_playlist_info($name);
-                &listPlaylist(\@playlist);
+                listPlaylist(\@playlist);
             },
             Load => sub
             {
                 my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
-                my $name = &MenuSuite::selectMenu("Load: ", \@playlistList);
+                my $name = MenuSuite::selectMenu("Load: ", \@playlistList);
 
                 chomp($name);
                 if (length $name)
@@ -234,7 +237,7 @@ my %mainOptions = (
             Delete => sub
             {
                 my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
-                my $name = &MenuSuite::selectMenu("Delete: ", \@playlistList);
+                my $name = MenuSuite::selectMenu("Delete: ", \@playlistList);
 
                 chomp($name);
                 if (length $name)
@@ -244,7 +247,7 @@ my %mainOptions = (
             },
             Clear => sub { $mpd->clear(); },
             );
-        &MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
+        MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
     },
     Toggle => \&showToggleMenu,
     Update => sub { $mpd->update(); },
@@ -256,8 +259,8 @@ my %mainOptions = (
             push(@data, "$key: $stats->{$key}");
         }
 
-        &MenuSuite::selectMenu("Stats: ", \@data);
+        MenuSuite::selectMenu("Stats: ", \@data);
     },
     );
 
-&MenuSuite::runMenu("Mpd: ", \%mainOptions);
+MenuSuite::runMenu("Mpd: ", \%mainOptions);
