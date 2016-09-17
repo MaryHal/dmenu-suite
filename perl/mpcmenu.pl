@@ -158,7 +158,7 @@ sub seek
         return;
     }
 
-    my $seekValue = MenuSuite::promptMenu("Seek: ") || die;
+    my $seekValue = MenuSuite::promptMenu("Seek: ") || exit 0;
 
     if ($seekValue =~ /(\d+)%/)
     {
@@ -185,9 +185,7 @@ sub songPushLoop
 
     while (1)
     {
-        my $uri = MenuSuite::promptMenu("Push: ", $songListStr);
-        last if (!length $uri);
-
+        my $uri = MenuSuite::promptMenu("Push: ", $songListStr) || exit 0;
         mpc()->add($uri);
     }
 }
@@ -212,11 +210,31 @@ my %mainOptions = (
                            "disc",
                            "filename");
 
-        my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || die;
-        my $filter = MenuSuite::promptMenu("Filter Type: ") || die;
+        my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || exit 0;
+        my $filter = MenuSuite::promptMenu("Filter Type: ") || exit 0;
 
         my @songList = mpc()->search($filterType, $filter);
         songPushLoop(\@songList);
+    },
+    Remove => sub {
+        while (1)
+        {
+            my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
+            if (!scalar @playlist)
+            {
+                MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+                exit 0;
+            }
+
+            my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @playlist;
+
+            my $song = MenuSuite::selectMenu("Removek ", \@options) || exit 0;
+
+            if ($song =~ /^(\d+)  /)
+            {
+                mpc()->delete_id($1);
+            }
+        }
     },
     List => sub {
         my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
