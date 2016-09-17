@@ -100,7 +100,7 @@ sub detailedSongInfo
         $songInfo->{'Artist'},
         $songInfo->{'Album'},
         $songInfo->{'Track'},
-        secondsToString(mpc()->elapsed),
+        # secondsToString(mpc()->elapsed),
         secondsToString($songInfo->{'Time'})
         );
 
@@ -116,7 +116,7 @@ sub showDetailedSongInfo
     }
 
     my $songInfo;
-    if (mpc()->state ne 'stop')
+    if (isPlaying())
     {
         $songInfo = \%{mpc()->current_song()};
     }
@@ -153,17 +153,12 @@ sub showToggleMenu
 
 sub seek
 {
-    if (mpc()->state eq 'stop')
+    if (!isPlaying())
     {
         return;
     }
 
-    my $seekValue = MenuSuite::promptMenu("Seek: ");
-
-    if (!length $seekValue)
-    {
-        return;
-    }
+    my $seekValue = MenuSuite::promptMenu("Seek: ") || die;
 
     if ($seekValue =~ /(\d+)%/)
     {
@@ -297,6 +292,38 @@ my %mainOptions = (
         }
 
         MenuSuite::selectMenu("Stats: ", \@data);
+    },
+    Lyrics => sub {
+        if (!mpc()->playlist_length)
+        {
+            MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+            return;
+        }
+
+        my $songInfo;
+        if (isPlaying())
+        {
+            $songInfo = \%{mpc()->current_song()};
+        }
+        else
+        {
+            $songInfo = \%{mpc()->playlist_info(0)};
+        }
+
+        my $lyricsFile = sprintf
+            "%s/.lyrics/%s - %s.txt",
+            $ENV{'HOME'},
+            $songInfo->{'Artist'},
+            $songInfo->{'Title'};
+
+        binmode(STDOUT, ":utf8");
+
+        if (! -f "$lyricsFile")
+        {
+            MenuSuite::promptMenu("Info: ", "Lyrics file not found\n$lyricsFile");
+            return;
+        }
+        system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
     },
     );
 
