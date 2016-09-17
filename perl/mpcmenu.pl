@@ -153,20 +153,77 @@ sub showToggleMenu
     MenuSuite::runMenu("Toggle: ", \%toggleOptions);
 }
 
+sub seek
+{
+    if (mpc()->state eq 'stop')
+    {
+        return;
+    }
+
+    my $seekValue = MenuSuite::promptMenu("Seek: ");
+
+    if (!length $seekValue)
+    {
+        return;
+    }
+
+    if ($seekValue =~ /(\d+)%/)
+    {
+        $seekValue = $1;
+
+        my $songInfo = mpc()->current_song();
+        mpc()->seek_cur($songInfo->{Time} * $seekValue / 100.0);
+    }
+    elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
+    {
+        my $minutes = $1 || 0;
+        my $seconds = $2;
+
+        mpc()->seek_cur($minutes * 60.0 + $seconds);
+    }
+}
+
+sub songPushLoop
+{
+    my ($songList) = @_;
+
+    my @uriList = map { $_->{'uri'} } @$songList;
+    my $songListStr = join("\n", @uriList);
+
+    while (1)
+    {
+        my $uri = MenuSuite::promptMenu("Push: ", $songListStr);
+        last if (!length $uri);
+
+        mpc()->add($uri);
+    }
+}
+
 my %mainOptions = (
     Push => sub {
-        # my @songList = mpc()->search("any", "");
+        my @songList = mpc()->list_all();
+        songPushLoop(\@songList);
+    },
+    PushFilter => sub {
+        my @filterTypes = ("any",
+                           "artist",
+                           "album",
+                           "title",
+                           "track",
+                           "name",
+                           "genre",
+                           "date",
+                           "composer",
+                           "performer",
+                           "comment",
+                           "disc",
+                           "filename");
 
-        my @uriList = map { $_->{'uri'} } mpc()->list_all();
-        my $songListStr = join("\n", @uriList);
+        my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || die;
+        my $filter = MenuSuite::promptMenu("Filter Type: ") || die;
 
-        while (1)
-        {
-            my $uri = MenuSuite::promptMenu("Push: ", $songListStr);
-            last if (!length $uri);
-
-            mpc()->add($uri);
-        }
+        my @songList = mpc()->search($filterType, $filter);
+        songPushLoop(\@songList);
     },
     List => sub {
         my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
@@ -178,35 +235,7 @@ my %mainOptions = (
     Pause => sub { mpc()->pause(); },
     Stop => sub { mpc()->stop(); },
     Current => \&showDetailedSongInfo,
-    Seek => sub
-    {
-        if (mpc()->state eq 'stop')
-        {
-            return;
-        }
-
-        my $seekValue = MenuSuite::promptMenu("Seek: ");
-
-        if (!length $seekValue)
-        {
-            return;
-        }
-
-        if ($seekValue =~ /(\d+)%/)
-        {
-            $seekValue = $1;
-
-            my $songInfo = mpc()->current_song();
-            mpc()->seek_cur($songInfo->{Time} * $seekValue / 100.0);
-        }
-        elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
-        {
-            my $minutes = $1 || 0;
-            my $seconds = $2;
-
-            mpc()->seek_cur($minutes * 60.0 + $seconds);
-        }
-    },
+    Seek => \&seek,
     Playlist => sub
     {
         my %playlistMenuOptions = (
