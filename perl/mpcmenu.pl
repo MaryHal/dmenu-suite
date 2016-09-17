@@ -12,26 +12,36 @@ use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
 use Net::MPD;
-my $mpd = Net::MPD->connect();
+my $mpd_;
+
+sub mpc
+{
+    if (!defined $mpd_)
+    {
+        $mpd_ = Net::MPD->connect();
+    }
+
+    return $mpd_;
+}
 
 sub isPlaying
 {
-    return $mpd->state eq 'stop';
+    return mpc()->state eq 'stop';
 }
 
 sub playOrPause
 {
-    if ($mpd->state eq 'stop')
+    if (mpc()->state eq 'stop')
     {
-        $mpd->play();
+        mpc()->play();
     }
-    elsif ($mpd->state eq 'pause')
+    elsif (mpc()->state eq 'pause')
     {
-        $mpd->pause(0);
+        mpc()->pause(0);
     }
-    elsif ($mpd->state eq 'play')
+    elsif (mpc()->state eq 'play')
     {
-        $mpd->pause(1);
+        mpc()->pause(1);
     }
 }
 
@@ -90,7 +100,7 @@ sub detailedSongInfo
         $songInfo->{'Artist'},
         $songInfo->{'Album'},
         $songInfo->{'Track'},
-        secondsToString($mpd->elapsed),
+        secondsToString(mpc()->elapsed),
         secondsToString($songInfo->{'Time'})
         );
 
@@ -99,20 +109,20 @@ sub detailedSongInfo
 
 sub showDetailedSongInfo
 {
-    if (!$mpd->playlist_length)
+    if (!mpc()->playlist_length)
     {
         MenuSuite::promptMenu("Info: ", "Playlist is Empty");
         return;
     }
 
     my $songInfo;
-    if ($mpd->state ne 'stop')
+    if (mpc()->state ne 'stop')
     {
-        $songInfo = \%{$mpd->current_song()};
+        $songInfo = \%{mpc()->current_song()};
     }
     else
     {
-        $songInfo = \%{$mpd->playlist_info(0)};
+        $songInfo = \%{mpc()->playlist_info(0)};
     }
 
     print Dumper($songInfo);
@@ -127,17 +137,17 @@ sub showToggleMenu
     {
         return shift ? 'true' : 'false';
     };
-    my $randomState  = $boolToString->($mpd->random);
-    my $repeatState  = $boolToString->($mpd->repeat);
-    my $consumeState = $boolToString->($mpd->consume);
-    my $singleState  = $boolToString->($mpd->single);
+    my $randomState  = $boolToString->(mpc()->random);
+    my $repeatState  = $boolToString->(mpc()->repeat);
+    my $consumeState = $boolToString->(mpc()->consume);
+    my $singleState  = $boolToString->(mpc()->single);
 
     # Proof of concept
     my %toggleOptions = (
-        "Random: $randomState"   => sub { $mpd->random($mpd->random   ? 0 : 1); showToggleMenu(); },
-        "Repeat: $repeatState"   => sub { $mpd->repeat($mpd->repeat   ? 0 : 1); showToggleMenu(); },
-        "Consume: $consumeState" => sub { $mpd->consume($mpd->consume ? 0 : 1); showToggleMenu(); },
-        "Single: $singleState"   => sub { $mpd->single($mpd->single   ? 0 : 1); showToggleMenu(); },
+        "Random: $randomState"   => sub { mpc()->random(mpc()->random   ? 0 : 1); showToggleMenu(); },
+        "Repeat: $repeatState"   => sub { mpc()->repeat(mpc()->repeat   ? 0 : 1); showToggleMenu(); },
+        "Consume: $consumeState" => sub { mpc()->consume(mpc()->consume ? 0 : 1); showToggleMenu(); },
+        "Single: $singleState"   => sub { mpc()->single(mpc()->single   ? 0 : 1); showToggleMenu(); },
         );
 
     MenuSuite::runMenu("Toggle: ", \%toggleOptions);
@@ -145,9 +155,9 @@ sub showToggleMenu
 
 my %mainOptions = (
     Push => sub {
-        # my @songList = $mpd->search("any", "");
+        # my @songList = mpc()->search("any", "");
 
-        my @uriList = map { $_->{'uri'} } $mpd->list_all();
+        my @uriList = map { $_->{'uri'} } mpc()->list_all();
         my $songListStr = join("\n", @uriList);
 
         while (1)
@@ -155,22 +165,22 @@ my %mainOptions = (
             my $uri = MenuSuite::promptMenu("Push: ", $songListStr);
             last if (!length $uri);
 
-            $mpd->add($uri);
+            mpc()->add($uri);
         }
     },
     List => sub {
-        my @playlist = grep { scalar keys %$_; } $mpd->playlist_info();
+        my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
         listPlaylist(\@playlist);
     },
     Play => \&playOrPause,
-    Next => sub { $mpd->next(); },
-    Prev => sub { $mpd->previous(); },
-    Pause => sub { $mpd->pause(); },
-    Stop => sub { $mpd->stop(); },
+    Next => sub { mpc()->next(); },
+    Prev => sub { mpc()->previous(); },
+    Pause => sub { mpc()->pause(); },
+    Stop => sub { mpc()->stop(); },
     Current => \&showDetailedSongInfo,
     Seek => sub
     {
-        if ($mpd->state eq 'stop')
+        if (mpc()->state eq 'stop')
         {
             return;
         }
@@ -186,15 +196,15 @@ my %mainOptions = (
         {
             $seekValue = $1;
 
-            my $songInfo = $mpd->current_song();
-            $mpd->seek_cur($songInfo->{Time} * $seekValue / 100.0);
+            my $songInfo = mpc()->current_song();
+            mpc()->seek_cur($songInfo->{Time} * $seekValue / 100.0);
         }
         elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
         {
             my $minutes = $1 || 0;
             my $seconds = $2;
 
-            $mpd->seek_cur($minutes * 60.0 + $seconds);
+            mpc()->seek_cur($minutes * 60.0 + $seconds);
         }
     },
     Playlist => sub
@@ -207,12 +217,12 @@ my %mainOptions = (
                 chomp($name);
                 if (length $name)
                 {
-                    $mpd->save($name);
+                    mpc()->save($name);
                 }
             },
             List => sub
             {
-                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("List: ", \@playlistList);
 
                 if (!length $name)
@@ -220,39 +230,39 @@ my %mainOptions = (
                     return;
                 }
 
-                my @playlist = grep { scalar keys %$_; } $mpd->list_playlist_info($name);
+                my @playlist = grep { scalar keys %$_; } mpc()->list_playlist_info($name);
                 listPlaylist(\@playlist);
             },
             Load => sub
             {
-                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("Load: ", \@playlistList);
 
                 chomp($name);
                 if (length $name)
                 {
-                    $mpd->load($name);
+                    mpc()->load($name);
                 }
             },
             Delete => sub
             {
-                my @playlistList = map { $_->{playlist} } $mpd->list_playlists();
+                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("Delete: ", \@playlistList);
 
                 chomp($name);
                 if (length $name)
                 {
-                    $mpd->rm($name);
+                    mpc()->rm($name);
                 }
             },
-            Clear => sub { $mpd->clear(); },
+            Clear => sub { mpc()->clear(); },
             );
         MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
     },
     Toggle => \&showToggleMenu,
-    Update => sub { $mpd->update(); },
+    Update => sub { mpc()->update(); },
     Stats => sub {
-        my $stats = $mpd->stats();
+        my $stats = mpc()->stats();
         my @data;
         foreach my $key (sort keys %$stats)
         {
