@@ -96,10 +96,9 @@ sub detailedSongInfo
     my ($songInfo) = @_;
 
     my @data = (
-        $songInfo->{'Title'},
+        $songInfo->{'Track'} . ": " . $songInfo->{'Title'},
         $songInfo->{'Artist'},
         $songInfo->{'Album'},
-        $songInfo->{'Track'},
         # secondsToString(mpc()->elapsed),
         secondsToString($songInfo->{'Time'})
         );
