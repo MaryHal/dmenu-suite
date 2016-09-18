@@ -1,7 +1,7 @@
 Menu Suite
 ==========
 
-This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf).
+This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf). There are also an experimental perl rewrite in the `perl` directory.
 
 Everyone's *nix setups are different. As such, these scripts fit my personal use case; it's not guaranteed to fit yours.
 
@@ -87,7 +87,7 @@ Usage:
     $ ./lockwrap ./mpcmenu
     $ ./lockwrap alsamixer
 
-If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile. I've accidentally held down one of my hotkeys that opens these menus causing a dozen terminals/menus to open. The addition of lockfiles will take care of mishaps like that.
+If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile.
 
 TODO
 ====

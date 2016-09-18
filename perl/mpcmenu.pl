@@ -228,9 +228,9 @@ my %mainOptions = (
 
             my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @playlist;
 
-            my $song = MenuSuite::selectMenu("Removek ", \@options) || exit 0;
+            my $song = MenuSuite::selectMenu("Remove: ", \@options) || exit 0;
 
-            if ($song =~ /^(\d+)  /)
+            if ($song =~ /^(\d+)/)
             {
                 mpc()->delete_id($1);
             }
