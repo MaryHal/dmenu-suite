@@ -108,24 +108,26 @@ sub detailedSongInfo
 
 sub showDetailedSongInfo
 {
+    my $songInfo = getCurrentSong();
+
+    my @data = detailedSongInfo($songInfo);
+    MenuSuite::selectMenu("Info: ", \@data);
+}
+
+sub getCurrentSong
+{
     if (!mpc()->playlist_length)
     {
         MenuSuite::promptMenu("Info: ", "Playlist is Empty");
         return;
     }
 
-    my $songInfo;
     if (isPlaying())
     {
-        $songInfo = \%{mpc()->current_song()};
-    }
-    else
-    {
-        $songInfo = \%{mpc()->playlist_info(0)};
+        return \%{mpc()->current_song()};
     }
 
-    my @data = detailedSongInfo($songInfo);
-    MenuSuite::selectMenu("Info: ", \@data);
+    return \%{mpc()->playlist_info(0)};
 }
 
 sub showToggleMenu
@@ -240,6 +242,23 @@ my %mainOptions = (
         listPlaylist(\@playlist);
     },
     Play => \&playOrPause,
+    PlayById => sub {
+        my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
+        if (!scalar @playlist)
+        {
+            MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+            exit 0;
+        }
+
+        my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @playlist;
+
+        my $song = MenuSuite::selectMenu("Remove: ", \@options) || exit 0;
+
+        if ($song =~ /^(\d+)/)
+        {
+            mpc()->play_id($1);
+        }
+    },
     Next => sub { mpc()->next(); },
     Prev => sub { mpc()->previous(); },
     Pause => sub { mpc()->pause(); },
