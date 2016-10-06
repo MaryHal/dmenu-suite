@@ -45,6 +45,34 @@ sub playOrPause
     }
 }
 
+sub getCurrentPlaylist
+{
+    my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
+    if (!scalar @playlist)
+    {
+        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        return;
+    }
+
+    return \@{playlist};
+}
+
+sub getCurrentSong
+{
+    if (!mpc()->playlist_length)
+    {
+        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        return;
+    }
+
+    if (isPlaying())
+    {
+        return \%{mpc()->current_song()};
+    }
+
+    return \%{mpc()->playlist_info(0)};
+}
+
 sub secondsToString
 {
     my ($seconds) = @_;
@@ -112,22 +140,6 @@ sub showDetailedSongInfo
 
     my @data = detailedSongInfo($songInfo);
     MenuSuite::selectMenu("Info: ", \@data);
-}
-
-sub getCurrentSong
-{
-    if (!mpc()->playlist_length)
-    {
-        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
-        return;
-    }
-
-    if (isPlaying())
-    {
-        return \%{mpc()->current_song()};
-    }
-
-    return \%{mpc()->playlist_info(0)};
 }
 
 sub showToggleMenu
@@ -220,14 +232,8 @@ my %mainOptions = (
     Remove => sub {
         while (1)
         {
-            my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
-            if (!scalar @playlist)
-            {
-                MenuSuite::promptMenu("Info: ", "Playlist is Empty");
-                exit 0;
-            }
-
-            my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @playlist;
+            my $playlist = getCurrentPlaylist() || exit 0;
+            my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @$playlist;
 
             my $song = MenuSuite::selectMenu("Remove: ", \@options) || exit 0;
 
@@ -238,21 +244,15 @@ my %mainOptions = (
         }
     },
     List => sub {
-        my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
-        listPlaylist(\@playlist);
+        my $playlist = getCurrentPlaylist() || exit 0;
+        listPlaylist($playlist);
     },
     Play => \&playOrPause,
     PlayById => sub {
-        my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
-        if (!scalar @playlist)
-        {
-            MenuSuite::promptMenu("Info: ", "Playlist is Empty");
-            exit 0;
-        }
+        my $playlist = getCurrentPlaylist() || exit 0;
+        my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @$playlist;
 
-        my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @playlist;
-
-        my $song = MenuSuite::selectMenu("Remove: ", \@options) || exit 0;
+        my $song = MenuSuite::selectMenu("Play: ", \@options) || exit 0;
 
         if ($song =~ /^(\d+)/)
         {
@@ -320,21 +320,7 @@ my %mainOptions = (
         MenuSuite::selectMenu("Stats: ", \@data);
     },
     Lyrics => sub {
-        if (!mpc()->playlist_length)
-        {
-            MenuSuite::promptMenu("Info: ", "Playlist is Empty");
-            return;
-        }
-
-        my $songInfo;
-        if (isPlaying())
-        {
-            $songInfo = \%{mpc()->current_song()};
-        }
-        else
-        {
-            $songInfo = \%{mpc()->playlist_info(0)};
-        }
+        my $songInfo = getCurrentSong() || exit 0;
 
         my $lyricsFile = sprintf
             "%s/.lyrics/%s - %s.txt",
@@ -351,6 +337,9 @@ my %mainOptions = (
         }
         system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
     },
+    Debug => sub {
+        print Dumper(getCurrentPlaylist());
+    }
     );
 
 MenuSuite::runMenu("Mpd: ", \%mainOptions);
