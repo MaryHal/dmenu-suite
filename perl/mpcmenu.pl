@@ -267,6 +267,8 @@ my %mainOptions = (
     Seek => \&seek,
     Playlist => sub
     {
+        my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
+
         my %playlistMenuOptions = (
             Save => sub
             {
@@ -275,7 +277,6 @@ my %mainOptions = (
             },
             List => sub
             {
-                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("List: ", \@playlistList) || exit 0;
 
                 my @playlist = grep { scalar keys %$_; } mpc()->list_playlist_info($name);
@@ -283,14 +284,12 @@ my %mainOptions = (
             },
             Load => sub
             {
-                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("Load: ", \@playlistList) || exit 0;
 
                 mpc()->load($name);
             },
             Rename => sub
             {
-                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $oldname = MenuSuite::selectMenu("Old Name: ", \@playlistList) || exit 0;
                 my $newname = MenuSuite::promptMenu("New Name: ") || exit 0;
 
@@ -298,7 +297,6 @@ my %mainOptions = (
             },
             Delete => sub
             {
-                my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
                 my $name = MenuSuite::selectMenu("Delete: ", \@playlistList) || exit 0;
 
                 mpc()->rm($name);
@@ -337,9 +335,6 @@ my %mainOptions = (
         }
         system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
     },
-    Debug => sub {
-        print Dumper(getCurrentPlaylist());
-    }
     );
 
 MenuSuite::runMenu("Mpd: ", \%mainOptions);
