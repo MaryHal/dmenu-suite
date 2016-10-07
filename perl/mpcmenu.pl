@@ -136,7 +136,7 @@ sub detailedSongInfo
 
 sub showDetailedSongInfo
 {
-    my $songInfo = getCurrentSong();
+    my $songInfo = getCurrentSong() || return;
 
     my @data = detailedSongInfo($songInfo);
     MenuSuite::selectMenu("Info: ", \@data);
@@ -285,20 +285,17 @@ my %mainOptions = (
             Load => sub
             {
                 my $name = MenuSuite::selectMenu("Load: ", \@playlistList) || exit 0;
-
                 mpc()->load($name);
             },
             Rename => sub
             {
                 my $oldname = MenuSuite::selectMenu("Old Name: ", \@playlistList) || exit 0;
                 my $newname = MenuSuite::promptMenu("New Name: ") || exit 0;
-
                 mpc()->rename($oldname, $newname);
             },
             Delete => sub
             {
                 my $name = MenuSuite::selectMenu("Delete: ", \@playlistList) || exit 0;
-
                 mpc()->rm($name);
             },
             Clear => sub { mpc()->clear(); },
