@@ -225,7 +225,7 @@ my %mainOptions = (
         my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || exit 0;
 
         my @filteredTags = mpc()->list($filterType);
-        my $filter = MenuSuite::selectMenu("Filter Query ($filterType): ", \@filteredTags) || exit 0;
+        my $filter = MenuSuite::selectMenu("Filter Query ($filterType): ", \@filteredTags);
 
         my @songList = mpc()->search($filterType, $filter);
         songPushLoop(\@songList);
