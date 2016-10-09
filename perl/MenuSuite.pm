@@ -11,7 +11,7 @@ use POSIX ":sys_wait_h";
 use IPC::Open2;
 
 my ($menuProg) = @ARGV;
-$menuProg //= "dmenu";
+$menuProg //= "rofi";
 
 sub setMenuHandler
 {
@@ -24,6 +24,10 @@ sub setMenuHandler
     elsif ($menuProg eq 'fzf')
     {
         return "fzf $ENV{'FZF_DEFAULT_OPTS'} --print-query --prompt '$prompt'";
+    }
+    elsif ($menuProg eq 'rofi')
+    {
+        return "rofi -dmenu -i -p '$prompt'";
     }
     else
     {
