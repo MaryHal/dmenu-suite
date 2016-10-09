@@ -222,9 +222,10 @@ my %mainOptions = (
                            "comment",
                            "disc",
                            "filename");
-
         my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || exit 0;
-        my $filter = MenuSuite::promptMenu("Filter Type: ") || exit 0;
+
+        my @filteredTags = mpc()->list($filterType);
+        my $filter = MenuSuite::selectMenu("Filter Query ($filterType): ", \@filteredTags) || exit 0;
 
         my @songList = mpc()->search($filterType, $filter);
         songPushLoop(\@songList);
