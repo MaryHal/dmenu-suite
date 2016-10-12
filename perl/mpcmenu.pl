@@ -342,7 +342,7 @@ my %mainOptions = (
         }
         else
         {
-            system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
+            system('xdg-open', "'$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
         }
     },
     );
