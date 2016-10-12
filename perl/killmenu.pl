@@ -16,7 +16,7 @@ $Data::Dumper::Sortkeys = 1;
 my $data = `ps aux`; # Already returns newline-delimited output
 my $selection = MenuSuite::promptMenu("Process List: ", $data) || exit 0;
 
-my @tokens = split /\W+/, $selection;
+my @tokens = split /\s+/, $selection;
 
 my $user = $tokens[0];
 my $pid = $tokens[1];
