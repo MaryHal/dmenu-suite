@@ -74,6 +74,8 @@ sub launchMenu
 sub promptMenu
 {
     my ($prompt, $info) = @_;
+    $info //= "";
+
     return MenuSuite::launchMenu($prompt, $info);
 }
 
