@@ -25,7 +25,7 @@ if (looks_like_number($pid))
 {
     # if ($user eq 'root')
 
-    my $check = MenuSuite::promptMenu("Are you sure? (y/n) ", $selection) || exit 0;
+    my $check = MenuSuite::promptMenu("Are you sure? (yes/no) ", $selection) || exit 0;
     exit 0 if uc($check) ne 'Y';
 
     system("kill $pid");

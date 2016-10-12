@@ -328,10 +328,22 @@ my %mainOptions = (
 
         if (! -f "$lyricsFile")
         {
-            MenuSuite::promptMenu("Info: ", "Lyrics file not found\n$lyricsFile");
-            return;
+            my $selection = MenuSuite::promptMenu("Lyrics file not found, create? (yes/no): ", "$lyricsFile") || exit 0;
+
+            if (uc($selection) eq 'YES')
+            {
+                my $now = time;
+                local (*TMP);
+
+                utime ($now, $now, $lyricsFile)
+                    || open (TMP, ">>$lyricsFile")
+                    || warn ("Couldn't touch file: $!\n");
+            }
         }
-        system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
+        else
+        {
+            system("xdg-open '$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
+        }
     },
     );
 

@@ -50,7 +50,8 @@ sub launchMenu
 
     waitpid($pid, 0);
 
-    # Get the last line of output
+    # Get the last line of output, sadly this doesn't support multiple
+    # selection.
     my $line = "";
     while (<CHILD_OUT>)
     {
