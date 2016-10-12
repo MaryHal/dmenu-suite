@@ -23,11 +23,10 @@ my $pid = $tokens[1];
 
 if (looks_like_number($pid))
 {
-    if ($user eq 'root')
-    {
-        my $check = MenuSuite::promptMenu("Killing a root process, Are you sure? (y/n) ", $selection) || exit 0;
-        exit 0 if uc($check) ne 'Y';
-    }
+    # if ($user eq 'root')
+
+    my $check = MenuSuite::promptMenu("Are you sure? (y/n) ", $selection) || exit 0;
+    exit 0 if uc($check) ne 'Y';
 
     system("kill $pid");
 }
