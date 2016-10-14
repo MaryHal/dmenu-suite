@@ -35,6 +35,14 @@ sub setMenuHandler
     }
 }
 
+sub buildInputStringFromArray
+{
+    my ($options) = @_;
+
+    # Chomp every line in options, then join. Don't wanna double up on newlines!
+    return join("\n", map { s|\Q$/\E\z||r } @$options);
+}
+
 sub launchMenu
 {
     my ($prompt, $input) = @_;
@@ -83,7 +91,7 @@ sub promptMenu
 sub selectMenu
 {
     my ($prompt, $options) = @_;
-    return launchMenu($prompt, join("\n", @$options));
+    return launchMenu($prompt, buildInputStringFromArray($options));
 }
 
 sub runMenu
@@ -91,7 +99,7 @@ sub runMenu
     my ($prompt, $dispatchTable) = @_;
 
     my @menuOptions = sort keys %$dispatchTable;
-    my $selection = launchMenu($prompt, join("\n", @menuOptions));
+    my $selection = launchMenu($prompt, buildInputStringFromArray(\@menuOptions));
 
     my $defaultAction = sub {};
     ((length $selection && $dispatchTable->{$selection}) || $defaultAction)->();
