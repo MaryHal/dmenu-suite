@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use warnings;
 use strict;
@@ -14,17 +14,17 @@ use MenuSuite;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
-my $thisDir = "$FindBin::Bin";
+my $this_dir = "$FindBin::Bin";
 
-my @filenames = map { basename($_) } bsd_glob("$thisDir/*.pl");
+my @filenames = map { basename($_) } bsd_glob("$this_dir/*.pl");
 my %menuOptions = map
 {
     my $filename = $_;
     $_ => sub {
-        exec("perl", "$thisDir/$filename")
+        exec "perl $this_dir/$filename"
     }
 } @filenames;
 
-$menuOptions{'[Screenshot]'} = sub { exec("maim -s"); };
+$menuOptions{'[Screenshot]'} = sub { exec 'maim -s'; };
 
-MenuSuite::runMenu("Run: ", \%menuOptions) || exit 0;
+MenuSuite::runMenu('Run: ', \%menuOptions) || exit 0;

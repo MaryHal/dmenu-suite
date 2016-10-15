@@ -18,7 +18,7 @@ sub loadNetProfile
 {
     my ($profileName) = @_;
 
-    system('sudo', 'netctl', 'switch-to', "$profileName");
+    exec 'sudo', 'netctl', 'switch-to', "$profileName";
 }
 
 my @rawList = `netctl list`;
@@ -26,7 +26,7 @@ my @rawList = `netctl list`;
 my %profileOptions;
 foreach my $profile (@rawList)
 {
-    chomp($profile);
+    chomp $profile;
 
     $profileOptions{$profile} = sub
     {
@@ -35,7 +35,7 @@ foreach my $profile (@rawList)
 }
 
 $profileOptions{'Wifi-Menu'} = sub {
-    exec('termite', '-e', 'sudo wifi-menu');
+    exec 'termite', '-e', 'sudo wifi-menu';
 };
 
-MenuSuite::runMenu("Profile: ", \%profileOptions) || exit 0;
+MenuSuite::runMenu('Profile: ', \%profileOptions) || exit 0;

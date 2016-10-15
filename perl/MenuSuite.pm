@@ -7,11 +7,10 @@ use strict;
 
 use Data::Dumper;
 
-use POSIX ":sys_wait_h";
+use POSIX ':sys_wait_h';
 use IPC::Open2;
 
-my ($menuProg) = @ARGV;
-$menuProg //= "rofi";
+my ($menuProg) = @ARGV; $menuProg //= 'rofi';
 
 sub setMenuHandler
 {
@@ -40,16 +39,16 @@ sub buildInputStringFromArray
     my ($options) = @_;
 
     # Chomp every line in options, then join. Don't wanna double up on newlines!
-    return join("\n", map { s/\s+\z//srx } @$options);
+    return join("\n", map { s/\s+\z//srx } @{$options});
 }
 
 sub launchMenu
 {
     my ($prompt, $input) = @_;
-    $input //= "";
+    $input //= '';
 
     my $menuCommand = setMenuHandler($prompt);
-    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, ${menuCommand}) or die "open2() failed $!";
+    my $pid = open2(\*CHILD_OUT, \*CHILD_IN, ${menuCommand}) || die "open2() failed $!";
 
     binmode CHILD_OUT, ':encoding(UTF-8)';
     binmode CHILD_IN, ':encoding(UTF-8)';
@@ -61,7 +60,7 @@ sub launchMenu
 
     # Get the last line of output, sadly this doesn't support multiple
     # selection.
-    my $line //= "";
+    my $line = '';
     while (<CHILD_OUT>)
     {
         chomp;
@@ -75,7 +74,7 @@ sub launchMenu
 
     if ($line eq '~kill')
     {
-        die "Kill switch activated";
+        die 'Kill switch activated';
     }
 
     return $line;
@@ -84,7 +83,7 @@ sub launchMenu
 sub promptMenu
 {
     my ($prompt, $info) = @_;
-    return MenuSuite::launchMenu($prompt, $info // "");
+    return MenuSuite::launchMenu($prompt, $info // '');
 }
 
 sub selectMenu

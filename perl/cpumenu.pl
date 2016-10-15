@@ -21,16 +21,16 @@ open(my $fh, '<', $scalingGovFile) or die "cannot open file $scalingGovFile";
     $currentGov = <$fh>;
 }
 chomp $currentGov;
-close($fh);
+close $fh;
 
 my @availableGov;
 open($fh, '<', $availableGovFile) or die "cannot open file $availableGovFile";
 {
     my $govOptionString = <$fh>;
-    @availableGov = split /\s/, $govOptionString;
+    @availableGov = split /\s/s, $govOptionString;
 }
-close($fh);
+close $fh;
 
 my $gov = MenuSuite::selectMenu("[${currentGov}]: ", \@availableGov) || exit 0;
 
-system('sudo', 'cpupower', 'frequency-set', '-g', "$gov > /dev/null");
+system 'sudo', 'cpupower', 'frequency-set', '-g', "$gov > /dev/null";

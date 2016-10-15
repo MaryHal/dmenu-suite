@@ -43,14 +43,16 @@ sub playOrPause
     {
         mpc()->pause(1);
     }
+
+    return;
 }
 
 sub getCurrentPlaylist
 {
-    my @playlist = grep { scalar keys %$_; } mpc()->playlist_info();
+    my @playlist = grep { scalar keys %{$_}; } mpc()->playlist_info();
     if (!scalar @playlist)
     {
-        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
         return;
     }
 
@@ -61,7 +63,7 @@ sub getCurrentSong
 {
     if (!mpc()->playlist_length)
     {
-        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
         return;
     }
 
@@ -76,46 +78,51 @@ sub getCurrentSong
 sub secondsToString
 {
     my ($seconds) = @_;
-    return sprintf("%02d:%02d", ($seconds / 60) % 60, $seconds % 60);
+    return
+        sprintf '%02d:%02d',
+        ($seconds / 60) % 60,
+        $seconds % 60;
 }
 
 sub listPlaylist
 {
     my ($songList) = @_;
 
-    if (!scalar @$songList)
+    if (!scalar @{$songList})
     {
-        MenuSuite::promptMenu("Info: ", "Playlist is Empty");
+        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
         return;
     }
 
     my $i = 1;
     my %optionHash;
-    foreach my $song (@$songList)
+    foreach my $song (@{$songList})
     {
-        my $key = sprintf "%3i  %s", $i,  briefSongInfo($song);
+        my $key = sprintf '%3i  %s', $i,  briefSongInfo($song);
         $optionHash{$key} = sub
         {
             my @data = detailedSongInfo($song);
-            MenuSuite::selectMenu("Info: ", \@data);
+            MenuSuite::selectMenu('Info: ', \@data);
         };
 
         $i++;
     }
 
-    MenuSuite::runMenu("List: ", \%optionHash);
+    MenuSuite::runMenu('List: ', \%optionHash);
+
+    return;
 }
 
 sub briefSongInfo
 {
     my ($song) = @_;
 
-    if (scalar keys %$song)
+    if (scalar keys %{$song})
     {
-        return sprintf("%s - %s - %s",
+        return sprintf '%s - %s - %s',
                        $song->{'Title'},
                        $song->{'Artist'},
-                       $song->{'Album'});
+                       $song->{'Album'};
     }
 }
 
@@ -124,11 +131,11 @@ sub detailedSongInfo
     my ($songInfo) = @_;
 
     my @data = (
-        $songInfo->{'Track'} . ": " . $songInfo->{'Title'},
+        $songInfo->{'Track'} . ': ' . $songInfo->{'Title'},
         $songInfo->{'Artist'},
         $songInfo->{'Album'},
         # secondsToString(mpc()->elapsed),
-        secondsToString($songInfo->{'Time'})
+        secondsToString($songInfo->{'Time'}),
         );
 
     return @data;
@@ -139,7 +146,9 @@ sub showDetailedSongInfo
     my $songInfo = getCurrentSong() || return;
 
     my @data = detailedSongInfo($songInfo);
-    MenuSuite::selectMenu("Info: ", \@data);
+    MenuSuite::selectMenu('Info: ', \@data);
+
+    return;
 }
 
 sub showToggleMenu
@@ -161,46 +170,52 @@ sub showToggleMenu
         "Single: $singleState"   => sub { mpc()->single(mpc()->single   ? 0 : 1); showToggleMenu(); },
         );
 
-    MenuSuite::runMenu("Toggle: ", \%toggleOptions);
+    MenuSuite::runMenu('Toggle: ', \%toggleOptions);
+
+    return;
 }
 
-sub seek
+sub songSeek
 {
     if (!isPlaying())
     {
         return;
     }
 
-    my $seekValue = MenuSuite::promptMenu("Seek: ") || exit 0;
+    my $seekValue = MenuSuite::promptMenu('Seek: ') || exit 0;
 
-    if ($seekValue =~ /(\d+)%/)
+    if ($seekValue =~ /(\d+)%/s)
     {
         $seekValue = $1;
 
         my $songInfo = mpc()->current_song();
         mpc()->seek_cur($songInfo->{Time} * $seekValue / 100.0);
     }
-    elsif ($seekValue =~ /(?:(\d+):)?(\d+)/)
+    elsif ($seekValue =~ /(?:(\d+):)?(\d+)/s)
     {
         my $minutes = $1 || 0;
         my $seconds = $2;
 
         mpc()->seek_cur($minutes * 60.0 + $seconds);
     }
+
+    return;
 }
 
 sub songPushLoop
 {
     my ($songList) = @_;
 
-    my @uriList = map { $_->{'uri'} } @$songList;
+    my @uriList = map { $_->{'uri'} } @{$songList};
     my $songListStr = join("\n", @uriList);
 
     while (1)
     {
-        my $uri = MenuSuite::promptMenu("Push: ", $songListStr) || exit 0;
+        my $uri = MenuSuite::promptMenu('Push: ', $songListStr) || last;
         mpc()->add($uri);
     }
+
+    return;
 }
 
 my %mainOptions = (
@@ -209,20 +224,21 @@ my %mainOptions = (
         songPushLoop(\@songList);
     },
     PushFilter => sub {
-        my @filterTypes = ("any",
-                           "artist",
-                           "album",
-                           "title",
-                           "track",
-                           "name",
-                           "genre",
-                           "date",
-                           "composer",
-                           "performer",
-                           "comment",
-                           "disc",
-                           "filename");
-        my $filterType = MenuSuite::selectMenu("Filter Type: ", \@filterTypes) || exit 0;
+        my @filterTypes = ('any',
+                           'artist',
+                           'album',
+                           'title',
+                           'track',
+                           'name',
+                           'genre',
+                           'date',
+                           'composer',
+                           'performer',
+                           'comment',
+                           'disc',
+                           'filename',
+            );
+        my $filterType = MenuSuite::selectMenu('Filter Type: ', \@filterTypes) || exit 0;
 
         my @filteredTags = mpc()->list($filterType);
         my $filter = MenuSuite::selectMenu("Filter Query ($filterType): ", \@filteredTags) || exit 0;
@@ -234,11 +250,11 @@ my %mainOptions = (
         while (1)
         {
             my $playlist = getCurrentPlaylist() || exit 0;
-            my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @$playlist;
+            my @options = map { $_->{Id} . '  ' . briefSongInfo($_); } @{$playlist};
 
-            my $song = MenuSuite::selectMenu("Remove: ", \@options) || exit 0;
+            my $song = MenuSuite::selectMenu('Remove: ', \@options) || exit 0;
 
-            if ($song =~ /^(\d+)/)
+            if ($song =~ /^(\d+)/s)
             {
                 mpc()->delete_id($1);
             }
@@ -251,11 +267,11 @@ my %mainOptions = (
     Play => \&playOrPause,
     PlayById => sub {
         my $playlist = getCurrentPlaylist() || exit 0;
-        my @options = map { $_->{Id} . "  " . briefSongInfo($_); } @$playlist;
+        my @options = map { $_->{Id} . '  ' . briefSongInfo($_); } @$playlist;
 
-        my $song = MenuSuite::selectMenu("Play: ", \@options) || exit 0;
+        my $song = MenuSuite::selectMenu('Play: ', \@options) || exit 0;
 
-        if ($song =~ /^(\d+)/)
+        if ($song =~ /^(\d+)/s)
         {
             mpc()->play_id($1);
         }
@@ -265,7 +281,7 @@ my %mainOptions = (
     Pause => sub { mpc()->pause(); },
     Stop => sub { mpc()->stop(); },
     Current => \&showDetailedSongInfo,
-    Seek => \&seek,
+    Seek => \&songSeek,
     Playlist => sub
     {
         my @playlistList = map { $_->{playlist} } mpc()->list_playlists();
@@ -273,78 +289,79 @@ my %mainOptions = (
         my %playlistMenuOptions = (
             Save => sub
             {
-                my $name = MenuSuite::promptMenu("Save: ") || exit 0;
+                my $name = MenuSuite::promptMenu('Save: ') || exit 0;
                 mpc()->save($name);
             },
             List => sub
             {
-                my $name = MenuSuite::selectMenu("List: ", \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('List: ', \@playlistList) || exit 0;
 
                 my @playlist = grep { scalar keys %$_; } mpc()->list_playlist_info($name);
                 listPlaylist(\@playlist);
             },
             Load => sub
             {
-                my $name = MenuSuite::selectMenu("Load: ", \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('Load: ', \@playlistList) || exit 0;
                 mpc()->load($name);
             },
             Rename => sub
             {
-                my $oldname = MenuSuite::selectMenu("Old Name: ", \@playlistList) || exit 0;
-                my $newname = MenuSuite::promptMenu("New Name: ") || exit 0;
+                my $oldname = MenuSuite::selectMenu('Old Name: ', \@playlistList) || exit 0;
+                my $newname = MenuSuite::promptMenu('New Name: ') || exit 0;
                 mpc()->rename($oldname, $newname);
             },
             Delete => sub
             {
-                my $name = MenuSuite::selectMenu("Delete: ", \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('Delete: ', \@playlistList) || exit 0;
                 mpc()->rm($name);
             },
             Clear => sub { mpc()->clear(); },
             );
-        MenuSuite::runMenu("Playlist: ", \%playlistMenuOptions);
+        MenuSuite::runMenu('Playlist: ', \%playlistMenuOptions);
     },
     Toggle => \&showToggleMenu,
     Update => sub { mpc()->update(); },
     Stats => sub {
         my $stats = mpc()->stats();
         my @data;
-        foreach my $key (sort keys %$stats)
+        foreach my $key (sort keys %{$stats})
         {
-            push(@data, "$key: $stats->{$key}");
+            push @data, "$key: $stats->{$key}";
         }
 
-        MenuSuite::selectMenu("Stats: ", \@data);
+        MenuSuite::selectMenu('Stats: ', \@data);
     },
     Lyrics => sub {
         my $songInfo = getCurrentSong() || exit 0;
 
         my $lyricsFile = sprintf
-            "%s/.lyrics/%s - %s.txt",
+            '%s/.lyrics/%s - %s.txt',
             $ENV{'HOME'},
             $songInfo->{'Artist'},
             $songInfo->{'Title'};
 
-        binmode(STDOUT, ":utf8");
+        binmode STDOUT, ':encoding(UTF-8)';
 
         if (! -f "$lyricsFile")
         {
-            my $selection = MenuSuite::promptMenu("Lyrics file not found, create? (yes/no): ", "$lyricsFile") || exit 0;
+            my $selection = MenuSuite::promptMenu('Lyrics file not found, create? (yes/no): ', "$lyricsFile") || exit 0;
 
             if (uc($selection) eq 'YES')
             {
                 my $now = time;
                 local (*TMP);
 
-                utime ($now, $now, $lyricsFile)
-                    || open (TMP, ">>$lyricsFile")
-                    || warn ("Couldn't touch file: $!\n");
+                utime($now, $now, $lyricsFile)
+                    || open(TMP, '>>', "$lyricsFile")
+                    || warn "Couldn't touch file: $!\n";
+                close TMP;
             }
         }
         else
         {
-            system('xdg-open', "'$lyricsFile'") == 0 or die "Call to xdg-open failed: $?";
+            system('xdg-open', "'$lyricsFile'") == 0 or die "Call to xdg-open failed: $!";
         }
     },
     );
 
-MenuSuite::runMenu("Mpd: ", \%mainOptions);
+MenuSuite::runMenu('Mpd: ', \%mainOptions);
