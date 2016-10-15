@@ -34,4 +34,8 @@ foreach my $profile (@rawList)
     };
 }
 
+$profileOptions{'Wifi-Menu'} = sub {
+    exec('termite', '-e', 'sudo wifi-menu');
+};
+
 MenuSuite::runMenu("Profile: ", \%profileOptions) || exit 0;
