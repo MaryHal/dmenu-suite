@@ -20,4 +20,4 @@ my @files = map { basename($_) } bsd_glob("$thisDir/*.pl");
 
 my $selection = MenuSuite::selectMenu("Run: ", \@files) || exit 0;
 
-system("perl", "$thisDir/$selection");
+exec("perl", "$thisDir/$selection");
