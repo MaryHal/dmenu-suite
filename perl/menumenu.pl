@@ -16,8 +16,15 @@ $Data::Dumper::Sortkeys = 1;
 
 my $thisDir = "$FindBin::Bin";
 
-my @files = map { basename($_) } bsd_glob("$thisDir/*.pl");
+my @filenames = map { basename($_) } bsd_glob("$thisDir/*.pl");
+my %menuOptions = map
+{
+    my $filename = $_;
+    $_ => sub {
+        exec("perl", "$thisDir/$filename")
+    }
+} @filenames;
 
-my $selection = MenuSuite::selectMenu("Run: ", \@files) || exit 0;
+$menuOptions{'[Screenshot]'} = sub { exec("maim -s"); };
 
-exec("perl", "$thisDir/$selection");
+MenuSuite::runMenu("Run: ", \%menuOptions) || exit 0;
