@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 package MenuSuite;
 
@@ -31,7 +31,7 @@ sub setMenuHandler
     }
     else
     {
-        die "Invalid MenuProg $menuProg";
+        die "Invalid MenuProg $menuProg $!";
     }
 }
 
@@ -40,18 +40,19 @@ sub buildInputStringFromArray
     my ($options) = @_;
 
     # Chomp every line in options, then join. Don't wanna double up on newlines!
-    return join("\n", map { s|\Q$/\E\z||r } @$options);
+    return join("\n", map { s/\s+\z//srx } @$options);
 }
 
 sub launchMenu
 {
     my ($prompt, $input) = @_;
+    $input //= "";
 
     my $menuCommand = setMenuHandler($prompt);
     my $pid = open2(\*CHILD_OUT, \*CHILD_IN, ${menuCommand}) or die "open2() failed $!";
 
-    binmode CHILD_OUT, ':utf8';
-    binmode CHILD_IN, ':utf8';
+    binmode CHILD_OUT, ':encoding(UTF-8)';
+    binmode CHILD_IN, ':encoding(UTF-8)';
 
     print CHILD_IN $input;
     close CHILD_IN;
@@ -60,11 +61,11 @@ sub launchMenu
 
     # Get the last line of output, sadly this doesn't support multiple
     # selection.
-    my $line = "";
+    my $line //= "";
     while (<CHILD_OUT>)
     {
         chomp;
-        if (/\S/)
+        if (/\S/s)
         {
             $line = $_;
         }
@@ -83,22 +84,21 @@ sub launchMenu
 sub promptMenu
 {
     my ($prompt, $info) = @_;
-    $info //= "";
-
-    return MenuSuite::launchMenu($prompt, $info);
+    return MenuSuite::launchMenu($prompt, $info // "");
 }
 
 sub selectMenu
 {
     my ($prompt, $options) = @_;
-    return launchMenu($prompt, buildInputStringFromArray($options));
+    return launchMenu($prompt, buildInputStringFromArray($options // ()));
 }
 
 sub runMenu
 {
     my ($prompt, $dispatchTable) = @_;
+    $dispatchTable //= ();
 
-    my @menuOptions = sort keys %$dispatchTable;
+    my @menuOptions = sort keys %{$dispatchTable};
     my $selection = launchMenu($prompt, buildInputStringFromArray(\@menuOptions));
 
     my $defaultAction = sub {};
