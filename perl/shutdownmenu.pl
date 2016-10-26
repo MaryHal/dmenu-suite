@@ -20,10 +20,10 @@ my %shutdownOptions = (
     },
     Reboot => sub {
         my $delay = MenuSuite::selectMenu('Delay: ', \@timings) || exit 0;
-        system 'sudo', 'shutdown', '-r', "$delay";
+        exec 'sudo', 'shutdown', '-r', "$delay";
     },
     Sleep => sub {
-        system 'sudo', 'systemctl', 'suspend';
+        exec 'sudo', 'systemctl', 'suspend';
     },
     Lock => sub {
         my $lockscreenWallpaper = $ENV{'HOME'} . '/docs/wallpapers/old/SoftAndClean.png';

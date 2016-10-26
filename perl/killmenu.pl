@@ -28,5 +28,5 @@ if (looks_like_number($pid))
     my $check = MenuSuite::promptMenu("Are you sure? (yes/no) ", $selection) || exit 0;
     exit 0 if uc($check) ne 'YES';
 
-    system("kill $pid");
+    exec "kill $pid";
 }

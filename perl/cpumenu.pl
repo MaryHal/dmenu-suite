@@ -33,4 +33,4 @@ close $fh;
 
 my $gov = MenuSuite::selectMenu("[${currentGov}]: ", \@availableGov) || exit 0;
 
-system 'sudo', 'cpupower', 'frequency-set', '-g', "$gov > /dev/null";
+exec 'sudo', 'cpupower', 'frequency-set', '-g', "$gov > /dev/null";
