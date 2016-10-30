@@ -13,7 +13,7 @@ use MenuSuite;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
-sub getDirsFromPath()
+sub getDirectoriesStringFromPath()
 {
     my $dirs = $ENV{'PATH'};
     $dirs =~ s/:/ /g;
@@ -27,8 +27,8 @@ sub shouldUpdateCache
     return -z $cacheFile || !system("stest -dqr -n '$cacheFile' $directories");
 }
 
-my $dirs = getDirsFromPath();
-my $cacheFile = "$ENV{'HOME'}/.cache/dmenu_run";
+my $dirs = getDirectoriesStringFromPath();
+my $cacheFile = "$ENV{'HOME'}/.cache/dmenu/run_cache";
 
 unless(-e $cacheFile)
 {

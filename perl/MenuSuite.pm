@@ -11,7 +11,7 @@ use POSIX ':sys_wait_h';
 use IPC::Open2;
 
 my ($menuProg) = @ARGV;
-$menuProg //= 'rofi';
+$menuProg //= 'dmenu';
 
 sub setMenuHandler
 {
