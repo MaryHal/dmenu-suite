@@ -8,12 +8,14 @@ use strict;
 use FindBin;
 use lib "$FindBin::Bin/";
 
+use File::Path qw(make_path);
+
 use MenuSuite;
 
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
-sub getDirectoriesStringFromPath()
+sub getDirectoriesStringFromPath
 {
     my $dirs = $ENV{'PATH'};
     $dirs =~ s/:/ /g;
@@ -27,25 +29,45 @@ sub shouldUpdateCache
     return -z $cacheFile || !system("stest -dqr -n '$cacheFile' $directories");
 }
 
-my $dirs = getDirectoriesStringFromPath();
-my $cacheFile = "$ENV{'HOME'}/.cache/dmenu/run_cache";
-
-unless(-e $cacheFile)
+sub createDirectory
 {
-    open my $fc, ">", $cacheFile;
-    close $fc;
+    my ($directory) = @_;
+
+    if ( ! -d $directory) {
+        make_path $directory || die "Failed to create path: $directory";
+    }
 }
 
-my @progs;
-
-if (shouldUpdateCache($cacheFile, $dirs))
+sub createFile
 {
-    @progs = `stest -flx $dirs | sort -u | tee "$cacheFile"`;
+    my ($file) = @_;
+
+    unless(-e $file)
+    {
+        open my $fc, ">", $file;
+        close $fc;
+    }
+}
+
+my $cacheDirectory = "$ENV{'HOME'}/.cache/dmenu/";
+my $cacheFile = 'run_cache';
+
+my $cachePath = "${cacheDirectory}/${cacheFile}";
+
+createDirectory($cacheDirectory);
+createFile($cachePath);
+
+my @progs;
+my $searchdirs = getDirectoriesStringFromPath();
+
+if (shouldUpdateCache($cachePath, $searchdirs))
+{
+    @progs = `stest -flx $searchdirs | sort -u | tee "$cacheFile"`;
 }
 else
 {
     my $content;
-    open(my $fh, '<', $cacheFile) or die "cannot open file $cacheFile";
+    open(my $fh, '<', $cachePath) or die "cannot open file $cacheFile";
     {
         @progs = <$fh>;
     }
