@@ -13,28 +13,44 @@ use MenuSuite;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
-my $dirs = $ENV{'PATH'};
-$dirs =~ s/:/ /g;
+sub getDirsFromPath()
+{
+    my $dirs = $ENV{'PATH'};
+    $dirs =~ s/:/ /g;
 
-my $cache = "$ENV{'HOME'}/.cache/dmenu_run";
+    return $dirs;
+}
 
-my $doUpdate = !system("stest -dqr -n '$cache' $dirs");
+sub shouldUpdateCache
+{
+    my ($cacheFile, $directories) = @_;
+    return -z $cacheFile || !system("stest -dqr -n '$cacheFile' $directories");
+}
+
+my $dirs = getDirsFromPath();
+my $cacheFile = "$ENV{'HOME'}/.cache/dmenu_run";
+
+unless(-e $cacheFile)
+{
+    open my $fc, ">", $cacheFile;
+    close $fc;
+}
 
 my @progs;
 
-if ($doUpdate)
+if (shouldUpdateCache($cacheFile, $dirs))
 {
-    @progs = `stest -flx $dirs | sort -u | tee "$cache"`;
+    @progs = `stest -flx $dirs | sort -u | tee "$cacheFile"`;
 }
 else
 {
     my $content;
-    open(my $fh, '<', $cache) or die "cannot open file $cache";
+    open(my $fh, '<', $cacheFile) or die "cannot open file $cacheFile";
     {
         @progs = <$fh>;
     }
     close($fh);
 }
 
-my $cmd = MenuSuite::selectMenu("Run: ", \@progs);
+my $cmd = MenuSuite::selectMenu("Run: ", \@progs) || exit 0;
 exec 'setsid', "$cmd";
