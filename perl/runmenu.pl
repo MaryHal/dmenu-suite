@@ -62,12 +62,12 @@ my $searchdirs = getDirectoriesStringFromPath();
 
 if (shouldUpdateCache($cachePath, $searchdirs))
 {
-    @progs = `stest -flx $searchdirs | sort -u | tee "$cacheFile"`;
+    @progs = `stest -flx $searchdirs | sort -u | tee "$cachePath"`;
 }
 else
 {
     my $content;
-    open(my $fh, '<', $cachePath) or die "cannot open file $cacheFile";
+    open(my $fh, '<', $cachePath) or die "cannot open file $cachePath";
     {
         @progs = <$fh>;
     }
