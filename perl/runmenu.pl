@@ -36,6 +36,8 @@ sub createDirectory
     if ( ! -d $directory) {
         make_path $directory || die "Failed to create path: $directory";
     }
+
+    return;
 }
 
 sub createFile
@@ -47,6 +49,8 @@ sub createFile
         open my $fc, ">", $file;
         close $fc;
     }
+
+    return;
 }
 
 my $cacheDirectory = "$ENV{'HOME'}/.cache/dmenu/";
@@ -66,7 +70,6 @@ if (shouldUpdateCache($cachePath, $searchdirs))
 }
 else
 {
-    my $content;
     open(my $fh, '<', $cachePath) or die "cannot open file $cachePath";
     {
         @progs = <$fh>;
