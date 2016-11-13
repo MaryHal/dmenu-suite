@@ -179,7 +179,8 @@ sub songSeek
 {
     if (!isPlaying())
     {
-        return;
+        my $seekValue = MenuSuite::promptMenu('No song is playing: ');
+        exit 0;
     }
 
     my $seekValue = MenuSuite::promptMenu('Seek: ') || exit 0;
