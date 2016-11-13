@@ -260,7 +260,7 @@ my %mainOptions = (
             }
         }
     },
-    List => sub {
+    Current => sub {
         my $playlist = getCurrentPlaylist() || exit 0;
         listPlaylist($playlist);
     },
@@ -280,7 +280,7 @@ my %mainOptions = (
     Prev => sub { mpc()->previous(); },
     Pause => sub { mpc()->pause(); },
     Stop => sub { mpc()->stop(); },
-    Current => \&showDetailedSongInfo,
+    # Current => \&showDetailedSongInfo,
     Seek => \&songSeek,
     Playlist => sub
     {
