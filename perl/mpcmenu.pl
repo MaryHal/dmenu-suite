@@ -26,7 +26,7 @@ sub mpc
 
 sub isPlaying
 {
-    return mpc()->state eq 'stop';
+    return mpc()->state ne 'stop';
 }
 
 sub playOrPause
@@ -352,7 +352,7 @@ my %mainOptions = (
                 local (*TMP);
 
                 utime($now, $now, $lyricsFile)
-                    || open(TMP, '>>', "$lyricsFile")
+                    || open(\*TMP, '>>', "$lyricsFile")
                     || warn "Couldn't touch file: $!\n";
                 close TMP;
             }
