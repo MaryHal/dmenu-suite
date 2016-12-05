@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-# Read from a pwsafe database.
-
 use warnings;
 use strict;
 
@@ -15,22 +13,44 @@ $Data::Dumper::Sortkeys = 1;
 
 my $entriesFile = "/tmp/pwentries";
 
-if (! -f "$entriesFile")
+sub DumpPasswordEntries
 {
-    MenuSuite::promptMenu("pwsafe entries file not found.");
-    my $ret = system("termite --class \"fzf-menu\" --geometry 480x80 -e \"pwsafe --list -o $entriesFile\"");
+    my $ret = system("termite --class \"fzf-menu\" --geometry 480x80 -e \"pwsafe --list -o ${entriesFile}\"");
 
     if ($ret != 0)
     {
-        system("rm $entriesFile");
+        system("rm ${entriesFile}");
         die "pwsafe command busted or cancelled";
     }
 }
 
-open(my $fh, '<', $entriesFile) || die "entries file still does not exist.";
-chomp(my @entries = <$fh>);
-close($fh);
+sub ReadPasswordEntries
+{
+    open(my $fh, '<', $entriesFile) || die "entries file still does not exist.";
+    chomp(my @entries = <$fh>);
+    close($fh);
 
-my $entry = MenuSuite::selectMenu("Entry: ", \@entries) || exit 0;
+    return @entries;
+}
 
-exec("termite --class \"fzf-menu\" --geometry 480x80 -e \"pwsafe -up ${entry}\"");
+sub GetUsernamePassword
+{
+    my ($entry) = @_;
+    exec("termite --class \"fzf-menu\" --geometry 480x80 -e \"pwsafe -up ${entry}\"");
+}
+
+## Build our menu
+
+my %entries;
+foreach my $entry (ReadPasswordEntries())
+{
+    $entries{$entry} = sub {
+        GetUsernamePassword($entry);
+    };
+}
+
+$entries{'[Reload]'} = sub {
+    DumpPasswordEntries();
+};
+
+MenuSuite::runMenu("Entry: ", \%entries) || exit 0;
