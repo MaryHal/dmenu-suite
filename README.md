@@ -1,21 +1,6 @@
 Menu Suite
 ----------
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
-**Table of Contents**
-
-- [-](#-)
-- [Included Scripts](#included-scripts)
-    - [-](#-)
-- [Screenshot(s)](#screenshots)
-- [Possible Usage](#possible-usage)
-    - [-](#-)
-- [Xresources](#xresources)
-- [Lockfiles](#lockfiles)
-- [TODO](#todo)
-
-<!-- markdown-toc end -->
-
 This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf). There are also an experimental perl rewrite in the `perl` directory.
 
 Everyone's *nix setups are different. As such, these scripts fit my personal use case and it's not guaranteed to fit yours.
