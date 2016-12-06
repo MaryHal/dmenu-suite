@@ -25,6 +25,6 @@ my %menuOptions = map
     }
 } @filenames;
 
-$menuOptions{'[Screenshot]'} = sub { exec 'maim -s'; };
+$menuOptions{'# Screenshot #'} = sub { exec 'maim -s'; };
 
 MenuSuite::runMenu('Run: ', \%menuOptions) || exit 0;

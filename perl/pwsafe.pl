@@ -36,12 +36,12 @@ sub ReadPasswordEntries
 sub GetUsernamePassword
 {
     my ($entry) = @_;
-    exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -up '${entry}'\"");
+    exec "termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -up '${entry}'\"";
 }
 
 sub GetAddEntry
 {
-    exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -add\"");
+    exec "termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -add\"";
 }
 
 ## Build our menu
@@ -51,7 +51,7 @@ my %entries = (
     '# Add #' => \&GetAddEntry,
     '# Edit #' => sub {
         my $entry = MenuSuite::promptMenu("Which? ") || exit 0;
-        exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -edit '${entry}'\"");
+        exec "termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -edit '${entry}'\"";
     });
 
 foreach my $entry (ReadPasswordEntries())

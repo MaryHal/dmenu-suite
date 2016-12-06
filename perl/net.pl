@@ -34,7 +34,7 @@ foreach my $profile (@rawList)
     };
 }
 
-$profileOptions{'Wifi-Menu'} = sub {
+$profileOptions{'# Wifi-Menu #'} = sub {
     exec 'termite', '-e', 'sudo wifi-menu';
 };
 
