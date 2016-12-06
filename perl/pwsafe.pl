@@ -47,9 +47,12 @@ sub GetAddEntry
 ## Build our menu
 
 my %entries = (
-    '[Reload]' => \&DumpPasswordEntries,
-    '[Add]' => \&GetAddEntry
-    );
+    '# Reload #' => \&DumpPasswordEntries,
+    '# Add #' => \&GetAddEntry,
+    '# Edit #' => sub {
+        my $entry = MenuSuite::promptMenu("Which? ") || exit 0;
+        exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -edit '${entry}'\"");
+    });
 
 foreach my $entry (ReadPasswordEntries())
 {
