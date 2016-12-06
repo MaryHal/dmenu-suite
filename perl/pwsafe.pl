@@ -26,7 +26,7 @@ sub DumpPasswordEntries
 
 sub ReadPasswordEntries
 {
-    open(my $fh, '<', $entriesFile) || die "entries file still does not exist.";
+    open(my $fh, '<', $entriesFile);
     chomp(my @entries = <$fh>);
     close($fh);
 
