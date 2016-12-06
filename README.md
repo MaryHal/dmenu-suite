@@ -17,12 +17,27 @@ Included Scripts
 | killmenu           | Kill processes.
 | menumenu           | Menu to select menus.
 | monitormenu        | Setup (preconfigured, hardcoded) monitor layouts with xrandr.
-| mpcmenu            | Interface for [mpd](http://www.musicpd.org/) (using [mpc](http://linux.die.net/man/1/mpc)).
+| mpcmenu            | Interface for [mpd](http://www.musicpd.org/) using [mpc](http://linux.die.net/man/1/mpc).
 | netmenu            | Wifi profile select using netctl.
 | runmenu            | List and run programs in user's $PATH.
 | shutdownmenu       | Shutdown, reboot, and sleep.
 | wallpapermenu      | Set a wallpaper (using setroot) from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
 | wmmenu             | Unfinished script to interact with wmctrl.
+
+### Additional Perl Scripts
+
+| Script             | Description
+| --------------     | -----------
+| MenuSuite.pm       | Perl module to manage menu making by using dispatch tables or simple list selection.
+| brightness.pl      | Set laptop monitor brightness.
+| cpugov.pl          | Query and set system's enabled cpu profiles.
+| kill.pl            | Kill processes.
+| menu.pl            | Menu to select menus (in this directory).
+| mpc.pl             | Interface for [mpd](http://www.musicpd.org/) using [Net::MPD](https://metacpan.org/pod/Net::MPD).
+| net.pl             | Wifi profile select using netctl.
+| pwsafe.pl          | Interact with pwsafe (mostly by spawning a terminal with that process running).
+| run.pl             | List and run programs in user's $PATH. Should have the same functionality as dmenu_run.
+| shutdown.pl        | Shutdown, reboot, and sleep.
 
 Screenshot(s)
 =============
