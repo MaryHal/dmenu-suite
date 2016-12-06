@@ -21,7 +21,7 @@ my %menuOptions = map
 {
     my $filename = $_;
     $_ => sub {
-        exec "perl $this_dir/$filename"
+        exec "perl $this_dir/$filename @ARGV"
     }
 } @filenames;
 
