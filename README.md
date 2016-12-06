@@ -42,6 +42,7 @@ Everyone's *nix setups are different. As such, these scripts fit my personal use
 
 ![Dmenu2 screenshot](screenshot01.png)
 ![FZF screenshot](screenshot02.png)
+![Rofi screenshot](screenshot03.png)
 
 ## Possible Usage
 
