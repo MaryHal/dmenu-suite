@@ -36,7 +36,7 @@ sub ReadPasswordEntries
 sub GetUsernamePassword
 {
     my ($entry) = @_;
-    exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -up ${entry}\"");
+    exec("termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -up '${entry}'\"");
 }
 
 sub GetAddEntry
