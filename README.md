@@ -1,12 +1,11 @@
-Menu Suite
-----------
+# Menu Suite
 
 This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf). There are also an experimental perl rewrite in the `perl` directory.
 
 Everyone's *nix setups are different. As such, these scripts fit my personal use case and it's not guaranteed to fit yours.
 
-Included Scripts
-================
+## Included Scripts
+
 | Script             | Description
 | --------------     | -----------
 | brightnessmenu     | Set laptop monitor brightness.
@@ -24,7 +23,7 @@ Included Scripts
 | wallpapermenu      | Set a wallpaper (using setroot) from a hardcoded directory. Need to implement selecting specific wallpapers for specific monitors.
 | wmmenu             | Unfinished script to interact with wmctrl.
 
-### Additional Perl Scripts
+## Additional Perl Scripts
 
 | Script             | Description
 | --------------     | -----------
@@ -39,13 +38,12 @@ Included Scripts
 | run.pl             | List and run programs in user's $PATH. Should have the same functionality as dmenu_run.
 | shutdown.pl        | Shutdown, reboot, and sleep.
 
-Screenshot(s)
-=============
+## Screenshot(s)
+
 ![Dmenu2 screenshot](screenshot01.png)
 ![FZF screenshot](screenshot02.png)
 
-Possible Usage
-==============
+## Possible Usage
 
 All scripts take a single optional argument to decide which backend to use. If this argument is excluded, dmenu is used by default. Backends supported: fzf, dmenu, and rofi.
 
@@ -72,8 +70,7 @@ A similar rule for i3 would be:
 
 When spawning a new terminal to run the `runmenu` script (with fzf), it currently does not properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
 
-Xresources
-==========
+## Xresources
 
 If you choose to use dmenu, `lib/menu_helpers` has a `USE_DMENURC` flag if you choose to not use the Xresources database (or don't have a version of dmenu that supports it). You should set that flag to `1` and modify `lib/dmenurc` in that case.
 
@@ -87,8 +84,7 @@ If you choose to go the Xresources route, you can specify options in your `.Xres
 
 Remember to run `xrdb -merge ~/.Xresources` to load these new values!
 
-Lockfiles
-=========
+## Lockfiles
 
 A useful concept relevant to these scripts are [semaphores](https://en.wikipedia.org/wiki/Semaphore_(programming)) (in particular, lockfiles). What lockfiles will allow use to do is to ensure that there is only one running menu at a time. There are many tools to do this: [lockfile](http://linux.die.net/man/1/lockfile), [flock](http://linux.die.net/man/1/flock), and some [homegrown](http://stackoverflow.com/questions/185451/quick-and-dirty-way-to-ensure-only-one-instance-of-a-shell-script-is-running-at) (albeit flawed) solutions. `lockwrap` is an extremely simple script that will pass your command to flock under a predefined lock name:
 
@@ -104,9 +100,10 @@ Usage:
 
 If these commands are immediately run one after another, alsamixer will not be opened as mpcmenu would be using the lockfile.
 
-TODO
-====
+## TODO
 
-Sourcing `menu_helpers.sh` introduces redundancy into every menu script. Maybe a way to solve this is to have another wrapper script to run each menu.
+### Shell Scripts
 
-Merge `menu_helpers.sh` into `menuwrap.sh`. The problem I have with this though is that each menu script can no longer be run without delegation from `menuwrap.sh`.
+- Sourcing `menu_helpers.sh` introduces redundancy into every menu script. Maybe a way to solve this is to have another wrapper script to run each menu.
+
+- Merge `menu_helpers.sh` into `menuwrap.sh`. The problem I have with this though is that each menu script can no longer be run without delegation from `menuwrap.sh`.
