@@ -1,8 +1,8 @@
 # Menu Suite
 
-This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf). There are also an experimental perl rewrite in the `perl` directory.
+This is a collection of shell scripts that interface with either [dmenu](http://tools.suckless.org/dmenu/) or [fzf](https://github.com/junegunn/fzf). There's also an experimental perl rewrite in the `perl` directory.
 
-Everyone's *nix setups are different. As such, these scripts fit my personal use case and it's not guaranteed to fit yours.
+Since everyone's *nix setups are different, these scripts fit my personal use case and may not fit yours.
 
 ## Included Scripts
 
@@ -69,7 +69,7 @@ A similar rule for i3 would be:
 
 #### Note:
 
-When spawning a new terminal to run the `runmenu` script (with fzf), it currently does not properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
+When spawning a new terminal to run the `runmenu` script (with fzf), sometimes it doesn't properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
 
 ## Xresources
 

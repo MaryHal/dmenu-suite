@@ -21,4 +21,4 @@ fi
 
 app=$(menu "Run: " "$cache" )
 
-[[ -n $app ]] && exec "$app" & disown
+[[ -n $app ]] && setsid "$app"
