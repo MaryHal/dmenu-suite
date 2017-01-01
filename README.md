@@ -69,7 +69,7 @@ A similar rule for i3 would be:
 
 #### Note:
 
-When spawning a new terminal to run the `runmenu` script (with fzf), sometimes it doesn't properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
+When spawning a new terminal to run the `runmenu` script (with fzf), sometimes the new process will not properly detach itself from its parent shell. So when the spawned terminal exits, the process started by `runmenu` will also exit.
 
 ## Xresources
 

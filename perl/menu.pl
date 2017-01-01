@@ -25,6 +25,7 @@ my %menuOptions = map
     }
 } @filenames;
 
+$menuOptions{'# Arandr #'} = sub { exec 'setsid arandr'; };
 $menuOptions{'# Screenshot #'} = sub { exec 'maim -s'; };
 
 MenuSuite::runMenu('Run: ', \%menuOptions) || exit 0;
