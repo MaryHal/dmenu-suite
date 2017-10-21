@@ -14,6 +14,10 @@ case "${BACKEND}" in
         MenuProg="fzf --print-query"
         promptOption="--prompt"
         ;;
+    'fzy')
+        MenuProg="fzy"
+        promptOption="--prompt"
+        ;;
     'dmenu')
         if [[ $USE_DMENURC == 1 ]]; then
             # $MENU_DIR should be set in parent script...
