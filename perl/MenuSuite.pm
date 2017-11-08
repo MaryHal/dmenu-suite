@@ -25,6 +25,10 @@ sub setMenuHandler
     {
         return "fzf $ENV{'FZF_DEFAULT_OPTS'} --print-query --prompt '$prompt'";
     }
+    elsif ($menuProg eq 'fzf-tmux')
+    {
+        return "fzf-tmux $ENV{'FZF_DEFAULT_OPTS'} --print-query --prompt '$prompt'";
+    }
     elsif ($menuProg eq 'fzy')
     {
         return "fzy --prompt '$prompt'";
