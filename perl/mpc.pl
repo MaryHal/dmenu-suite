@@ -321,7 +321,7 @@ my %mainOptions = (
         MenuSuite::runMenu('Playlist: ', \%playlistMenuOptions);
     },
     Toggle => \&showToggleMenu,
-    Update => sub { mpc()->update(); },
+    Rescan => sub { mpc()->update(); },
     Stats => sub {
         my $stats = mpc()->stats();
         my @data;

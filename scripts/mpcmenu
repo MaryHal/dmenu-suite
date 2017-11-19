@@ -36,7 +36,7 @@ mainMenu="[Select]
 [Single: ${singleState}]
 [Consume: ${consumeState}]
 [Lyrics]
-[Update]"
+[Rescan]"
 
 playlistOptions="[AddAll]
 [Remove]
@@ -248,7 +248,7 @@ case "${action}" in
             fi
         fi
         ;;
-    '[Update]')
+    '[Rescan]')
         notify-send "MPD Database" "Updating"
         mpc -q update
         ;;
