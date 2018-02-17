@@ -32,7 +32,10 @@ sub getServiceList
 
             my $action = MenuSuite::selectMenu($serviceKey, \@serviceActions);
             
-            exec 'st', '-e', 'sudo', 'systemctl', lc($action), $serviceName;
+            if (grep /^$action$/, @serviceActions)
+            {
+                exec 'sudo', 'systemctl', lc($action), $serviceName;
+            }
         };
     }
     
