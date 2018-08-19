@@ -50,7 +50,7 @@ my %entries = (
     '# Reload #' => \&DumpPasswordEntries,
     '# Add #' => \&GetAddEntry,
     '# Edit #' => sub {
-        my $entry = MenuSuite::promptMenu("Which? ") || exit 0;
+        my $entry = MenuSuite::promptMenu("Which") || exit 0;
         exec "termite --class \"fzf-menu\" --geometry 560x80 -e \"pwsafe -edit '${entry}'\"";
     });
 
@@ -61,4 +61,4 @@ foreach my $entry (ReadPasswordEntries())
     };
 }
 
-MenuSuite::runMenu("Entry: ", \%entries) || exit 0;
+MenuSuite::runMenu("Entry", \%entries) || exit 0;

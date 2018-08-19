@@ -31,6 +31,6 @@ open($fh, '<', $availableGovFile) or die "cannot open file $availableGovFile";
 }
 close $fh;
 
-my $gov = MenuSuite::selectMenu("[${currentGov}]: ", \@availableGov) || exit 0;
+my $gov = MenuSuite::selectMenu("[${currentGov}]", \@availableGov) || exit 0;
 
 exec 'sudo', 'cpupower', 'frequency-set', '-g', "$gov > /dev/null";

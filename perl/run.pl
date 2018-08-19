@@ -77,5 +77,5 @@ else
     close($fh);
 }
 
-my $cmd = MenuSuite::selectMenu("Run: ", \@progs) || exit 0;
+my $cmd = MenuSuite::selectMenu("Run", \@progs) || exit 0;
 exec 'setsid', "$cmd";

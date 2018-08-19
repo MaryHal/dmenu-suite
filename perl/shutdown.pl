@@ -15,11 +15,11 @@ my @timings = qw(now +60 +45 +30 +15 +10 +5 +3 +2 +1);
 
 my %shutdownOptions = (
     Shutdown => sub {
-        my $delay = MenuSuite::selectMenu('When: ', \@timings) || exit 0;
+        my $delay = MenuSuite::selectMenu('When', \@timings) || exit 0;
         exec 'sudo', 'shutdown', '-P', "$delay";
     },
     Reboot => sub {
-        my $delay = MenuSuite::selectMenu('When: ', \@timings) || exit 0;
+        my $delay = MenuSuite::selectMenu('When', \@timings) || exit 0;
         exec 'sudo', 'shutdown', '-r', "$delay";
     },
     Sleep => sub {
@@ -38,4 +38,4 @@ my %shutdownOptions = (
     },
     );
 
-MenuSuite::runMenu('Shutdown: ', \%shutdownOptions);
+MenuSuite::runMenu('Shutdown', \%shutdownOptions);

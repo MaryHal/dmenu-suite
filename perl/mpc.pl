@@ -52,7 +52,7 @@ sub getCurrentPlaylist
     my @playlist = grep { scalar keys %{$_}; } mpc()->playlist_info();
     if (!scalar @playlist)
     {
-        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
+        MenuSuite::promptMenu('Info', 'Playlist is Empty');
         return;
     }
 
@@ -63,7 +63,7 @@ sub getCurrentSong
 {
     if (!mpc()->playlist_length)
     {
-        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
+        MenuSuite::promptMenu('Info', 'Playlist is Empty');
         return;
     }
 
@@ -90,7 +90,7 @@ sub listPlaylist
 
     if (!scalar @{$songList})
     {
-        MenuSuite::promptMenu('Info: ', 'Playlist is Empty');
+        MenuSuite::promptMenu('Info', 'Playlist is Empty');
         return;
     }
 
@@ -102,13 +102,13 @@ sub listPlaylist
         $optionHash{$key} = sub
         {
             my @data = detailedSongInfo($song);
-            MenuSuite::selectMenu('Info: ', \@data);
+            MenuSuite::selectMenu('Info', \@data);
         };
 
         $i++;
     }
 
-    MenuSuite::runMenu('List: ', \%optionHash);
+    MenuSuite::runMenu('List', \%optionHash);
 
     return;
 }
@@ -146,7 +146,7 @@ sub showDetailedSongInfo
     my $songInfo = getCurrentSong() || return;
 
     my @data = detailedSongInfo($songInfo);
-    MenuSuite::selectMenu('Info: ', \@data);
+    MenuSuite::selectMenu('Info', \@data);
 
     return;
 }
@@ -170,7 +170,7 @@ sub showToggleMenu
         "Single: $singleState"   => sub { mpc()->single(mpc()->single   ? 0 : 1); showToggleMenu(); },
         );
 
-    MenuSuite::runMenu('Toggle: ', \%toggleOptions);
+    MenuSuite::runMenu('Toggle', \%toggleOptions);
 
     return;
 }
@@ -179,11 +179,11 @@ sub songSeek
 {
     if (!isPlaying())
     {
-        MenuSuite::promptMenu('No song is playing: ');
+        MenuSuite::promptMenu('No song is playing');
         exit 0;
     }
 
-    my $seekValue = MenuSuite::promptMenu('Seek: ') || exit 0;
+    my $seekValue = MenuSuite::promptMenu('Seek') || exit 0;
 
     if ($seekValue =~ /(\d+)%/s)
     {
@@ -212,7 +212,7 @@ sub songPushLoop
 
     while (1)
     {
-        my $uri = MenuSuite::promptMenu('Push: ', $songListStr) || last;
+        my $uri = MenuSuite::promptMenu('Push', $songListStr) || last;
         mpc()->add($uri);
     }
 
@@ -239,10 +239,10 @@ my %mainOptions = (
                            'disc',
                            'filename',
             );
-        my $filterType = MenuSuite::selectMenu('Filter Type: ', \@filterTypes) || exit 0;
+        my $filterType = MenuSuite::selectMenu('Filter Type', \@filterTypes) || exit 0;
 
         my @filteredTags = mpc()->list($filterType);
-        my $filter = MenuSuite::selectMenu("Filter Query ($filterType): ", \@filteredTags) || exit 0;
+        my $filter = MenuSuite::selectMenu("Filter Query ($filterType)", \@filteredTags) || exit 0;
 
         my @songList = mpc()->search($filterType, $filter);
         songPushLoop(\@songList);
@@ -253,7 +253,7 @@ my %mainOptions = (
             my $playlist = getCurrentPlaylist() || exit 0;
             my @options = map { $_->{Id} . '  ' . briefSongInfo($_); } @{$playlist};
 
-            my $song = MenuSuite::selectMenu('Remove: ', \@options) || exit 0;
+            my $song = MenuSuite::selectMenu('Remove', \@options) || exit 0;
 
             if ($song =~ /^(\d+)/s)
             {
@@ -270,7 +270,7 @@ my %mainOptions = (
         my $playlist = getCurrentPlaylist() || exit 0;
         my @options = map { $_->{Id} . '  ' . briefSongInfo($_); } @$playlist;
 
-        my $song = MenuSuite::selectMenu('Play: ', \@options) || exit 0;
+        my $song = MenuSuite::selectMenu('Play', \@options) || exit 0;
 
         if ($song =~ /^(\d+)/s)
         {
@@ -290,35 +290,35 @@ my %mainOptions = (
         my %playlistMenuOptions = (
             Save => sub
             {
-                my $name = MenuSuite::promptMenu('Save: ') || exit 0;
+                my $name = MenuSuite::promptMenu('Save') || exit 0;
                 mpc()->save($name);
             },
             List => sub
             {
-                my $name = MenuSuite::selectMenu('List: ', \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('List', \@playlistList) || exit 0;
 
                 my @playlist = grep { scalar keys %$_; } mpc()->list_playlist_info($name);
                 listPlaylist(\@playlist);
             },
             Load => sub
             {
-                my $name = MenuSuite::selectMenu('Load: ', \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('Load', \@playlistList) || exit 0;
                 mpc()->load($name);
             },
             Rename => sub
             {
-                my $oldname = MenuSuite::selectMenu('Old Name: ', \@playlistList) || exit 0;
-                my $newname = MenuSuite::promptMenu('New Name: ') || exit 0;
+                my $oldname = MenuSuite::selectMenu('Old Name', \@playlistList) || exit 0;
+                my $newname = MenuSuite::promptMenu('New Name') || exit 0;
                 mpc()->rename($oldname, $newname);
             },
             Delete => sub
             {
-                my $name = MenuSuite::selectMenu('Delete: ', \@playlistList) || exit 0;
+                my $name = MenuSuite::selectMenu('Delete', \@playlistList) || exit 0;
                 mpc()->rm($name);
             },
             Clear => sub { mpc()->clear(); },
             );
-        MenuSuite::runMenu('Playlist: ', \%playlistMenuOptions);
+        MenuSuite::runMenu('Playlist', \%playlistMenuOptions);
     },
     Toggle => \&showToggleMenu,
     Rescan => sub { mpc()->update(); },
@@ -330,7 +330,7 @@ my %mainOptions = (
             push @data, "$key: $stats->{$key}";
         }
 
-        MenuSuite::selectMenu('Stats: ', \@data);
+        MenuSuite::selectMenu('Stats', \@data);
     },
     Lyrics => sub {
         my $songInfo = getCurrentSong() || exit 0;
@@ -345,7 +345,7 @@ my %mainOptions = (
 
         if (! -f "$lyricsFile")
         {
-            my $selection = MenuSuite::promptMenu('Lyrics file not found, create? (yes/no): ', "$lyricsFile") || exit 0;
+            my $selection = MenuSuite::promptMenu('Lyrics file not found, create? (yes/no)', "$lyricsFile") || exit 0;
 
             if (uc($selection) eq 'YES')
             {
@@ -365,4 +365,4 @@ my %mainOptions = (
     },
     );
 
-MenuSuite::runMenu('Mpd: ', \%mainOptions);
+MenuSuite::runMenu('Mpd', \%mainOptions);

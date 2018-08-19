@@ -44,4 +44,4 @@ sub getServiceList
 
 my %services = getServiceList();
 
-MenuSuite::runMenu('Service: ', \%services);
+MenuSuite::runMenu('Service', \%services);
